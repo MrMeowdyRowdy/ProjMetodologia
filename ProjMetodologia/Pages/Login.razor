@@ -1,0 +1,51 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+
+@page "/"
+@layout LoginLayout
+@inject HttpClient Http
+
+<div class="row mt-5">
+    <div class="col-lg-4 offset-lg-4 border">
+        <div class="mb-3 text-center">
+            <h3>LOGIN</h3>
+        </div>
+        <div class="mb-3">
+            <label>Correo</label>
+            <input @bind="user.Username" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label>Contraseña</label>
+            <input @bind="user.Password" class="form-control" type="password"/>
+        </div>
+        <div class="mb-3">
+            <button @onclick="GetUser" class="btn btn-primary">Login</button>
+        </div>
+        <div class="mb-3">
+            <p>@apiResponse</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private User user = new User();
+    private Response[] apiResponse;
+
+    private async Task GetUser()
+    {
+        var apiName = $"api/Usuarios?usuario={user.Username}&password={user.Password}";
+
+        try
+        {
+            // Realizar la solicitud GET a la URL con los parámetros en la URL
+            apiResponse = await Http.GetFromJsonAsync<Response[]>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            // Manejar errores de solicitud aquí
+            Console.WriteLine($"Error: {e.Message}");
+        }
+    }
+}

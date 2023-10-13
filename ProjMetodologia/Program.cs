@@ -9,6 +9,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri(@"http://apiservicios.ecuasolmovsa.com:3009/")
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
