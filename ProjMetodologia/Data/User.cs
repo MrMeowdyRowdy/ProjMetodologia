@@ -1,13 +1,18 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ProjMetodologia.Data
+﻿namespace ProjMetodologia.Data
 {
     public class User
     {
-        [JsonPropertyName("usuario")]
-        public string? Username { get; set; }
-
-        [JsonPropertyName("password")]
-        public string? Password { get; set; }
+        public string NOMBREUSUARIO { get; set; }
+        public string PERFIL { get; set; }
+        public string OBSERVACION { get; set; }
+        public int CODIGOPERFIL { get; set; }
+        public string ESTADO { get; set; }
+        public int COMPANIA { get; set; }
+        public int Emisor { get; set; }
+        public int Cargo { get; set; }
+        public string NOMBREEMISOR { get; set; }
+        public string NOMBRECOMPANIA { get; set; }
+        public string USUARIOCLIENTE { get; set; }
+        public string RucUsuario { get; set; }
     }
 }

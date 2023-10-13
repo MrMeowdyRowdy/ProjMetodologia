@@ -6,6 +6,8 @@
 @page "/"
 @layout LoginLayout
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
+
 
 <div class="row mt-5">
     <div class="col-lg-4 offset-lg-4 border">
@@ -13,7 +15,7 @@
             <h3>LOGIN</h3>
         </div>
         <div class="mb-3">
-            <label>Correo</label>
+            <label>Usuario</label>
             <input @bind="user.Username" class="form-control"/>
         </div>
         <div class="mb-3">
@@ -24,28 +26,90 @@
             <button @onclick="GetUser" class="btn btn-primary">Login</button>
         </div>
         <div class="mb-3">
-            <p>@apiResponse</p>
+            @if (apiResponse != null)
+            {
+                <p class="text-success">Login success</p>
+            }
         </div>
+        @if (showDropdown)
+        {
+            <div class="mb-3">
+                <label>Emisor</label>
+                <select @bind="selectedEmisor" class="form-control">
+                    <option value="">Seleccione un emisor</option>
+                    @foreach (var emisor in apiResponseE)
+                    {
+                        <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <button @onclick="Validate" class="btn btn-primary">Continuar</button>
+            </div>
+            <div class="mb-3">
+                <p class="text-success">@resultado</p>
+            </div>
+        }
     </div>
 </div>
 
 @code {
-    private User user = new User();
-    private Response[] apiResponse;
+    private UserDto user = new UserDto();
+    private User[] apiResponse;
+    private List<Emisor> apiResponseE = new List<Emisor>();
+    private int selectedEmisor;
+    private bool showDropdown = false;
+    private String resultado;
 
     private async Task GetUser()
+    {
+        await GetUserData();
+        await GetEmisorData();
+        showDropdown = true;
+    }
+
+    private async Task GetUserData()
     {
         var apiName = $"api/Usuarios?usuario={user.Username}&password={user.Password}";
 
         try
         {
-            // Realizar la solicitud GET a la URL con los parámetros en la URL
-            apiResponse = await Http.GetFromJsonAsync<Response[]>(apiName);
+            apiResponse = await Http.GetFromJsonAsync<User[]>(apiName);
+            // Lógica adicional después de obtener apiResponse
         }
         catch (HttpRequestException e)
         {
-            // Manejar errores de solicitud aquí
-            Console.WriteLine($"Error: {e.Message}");
+            Console.WriteLine($"Error al obtener datos del usuario: {e.Message}");
+            // Manejar el error específico del usuario aquí
+        }
+    }
+
+    private async Task GetEmisorData()
+    {
+        var apiEmisor = "api/Varios/GetEmisor";
+
+        try
+        {
+            apiResponseE = await Http.GetFromJsonAsync<List<Emisor>>(apiEmisor);
+            selectedEmisor = apiResponseE.FirstOrDefault()?.Codigo ?? 0;
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+            // Manejar el error específico del emisor aquí
+        }
+    }
+
+    private void Validate()
+    {
+        if (selectedEmisor == apiResponse[0].Emisor)
+        {
+            resultado = "Access";
+            NavigationManager.NavigateTo("/Index");
+        }
+        else
+        {
+            resultado = "";
         }
     }
 }
