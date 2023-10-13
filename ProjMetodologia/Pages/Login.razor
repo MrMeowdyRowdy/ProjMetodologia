@@ -11,16 +11,19 @@
 
 <div class="row mt-5">
     <div class="col-lg-4 offset-lg-4 border">
+        <div class="mb-3 offset-lg-4">
+            <img src="Images/logoExample.png" alt="Logo de la empresa" class="img-fluid" style="max-width: 150px; max-height: 150px;" />
+        </div>
         <div class="mb-3 text-center">
             <h3>LOGIN</h3>
         </div>
         <div class="mb-3">
             <label>Usuario</label>
-            <input @bind="user.Username" class="form-control"/>
+            <input @bind="user.Username" class="form-control" />
         </div>
         <div class="mb-3">
             <label>Contraseña</label>
-            <input @bind="user.Password" class="form-control" type="password"/>
+            <input @bind="user.Password" class="form-control" type="password" />
         </div>
         <div class="mb-3">
             <button @onclick="GetUser" class="btn btn-primary">Login</button>
@@ -28,28 +31,43 @@
         <div class="mb-3">
             @if (apiResponse != null)
             {
-                <p class="text-success">Login success</p>
+                if (apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+                {
+                    <p class="text-success">@apiResponse[0].OBSERVACION</p>
+                    @if (showDropdown && apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+                    {
+                        <div class="mb-3">
+                            <label>Emisor</label>
+                            <select @bind="selectedEmisor" class="form-control">
+                                <option value="">Seleccione un emisor</option>
+                                @foreach (var emisor in apiResponseE)
+                                {
+                                    <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <button @onclick="Validate" class="btn btn-primary">Continuar</button>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-success">@resultado</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-danger">@apiResponse[0].OBSERVACION</p>
+                }
+            }
+            else if (apiResponse == null && !string.IsNullOrEmpty(user.Username) && !string.IsNullOrEmpty(user.Password))
+            {
+                <p class="text-danger">FALLO EN EL ACCESO</p>
             }
         </div>
-        @if (showDropdown)
-        {
-            <div class="mb-3">
-                <label>Emisor</label>
-                <select @bind="selectedEmisor" class="form-control">
-                    <option value="">Seleccione un emisor</option>
-                    @foreach (var emisor in apiResponseE)
-                    {
-                        <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
-                    }
-                </select>
-            </div>
-            <div class="mb-3">
-                <button @onclick="Validate" class="btn btn-primary">Continuar</button>
-            </div>
-            <div class="mb-3">
-                <p class="text-success">@resultado</p>
-            </div>
-        }
+        <div class="d-grid justify-content-md-end">
+            <button @onclick="LimpiarCampos" class="btn btn-secondary justify-content-md-end">Cancelar</button>
+            <p></p>
+        </div>
     </div>
 </div>
 
@@ -64,7 +82,10 @@
     private async Task GetUser()
     {
         await GetUserData();
-        await GetEmisorData();
+        if (apiResponse != null)
+        {
+            await GetEmisorData();
+        }
         showDropdown = true;
     }
 
@@ -75,12 +96,11 @@
         try
         {
             apiResponse = await Http.GetFromJsonAsync<User[]>(apiName);
-            // Lógica adicional después de obtener apiResponse
         }
         catch (HttpRequestException e)
         {
             Console.WriteLine($"Error al obtener datos del usuario: {e.Message}");
-            // Manejar el error específico del usuario aquí
+            apiResponse = null;
         }
     }
 
@@ -91,12 +111,11 @@
         try
         {
             apiResponseE = await Http.GetFromJsonAsync<List<Emisor>>(apiEmisor);
-            selectedEmisor = apiResponseE.FirstOrDefault()?.Codigo ?? 0;
+            selectedEmisor = apiResponse.Length > 0 ? apiResponse[0]?.Emisor ?? 0 : 0;
         }
         catch (HttpRequestException e)
         {
             Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
-            // Manejar el error específico del emisor aquí
         }
     }
 
@@ -112,4 +131,15 @@
             resultado = "";
         }
     }
+
+    private void LimpiarCampos()
+    {
+        apiResponse = null;
+        user.Username = string.Empty;
+        user.Password = string.Empty;
+        selectedEmisor = 0;
+        resultado = string.Empty;
+        showDropdown = false;
+    }
+
 }
