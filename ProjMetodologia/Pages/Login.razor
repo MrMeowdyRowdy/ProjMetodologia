@@ -7,6 +7,7 @@
 @layout LoginLayout
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject SharedStateService SharedState
 
 <div class="background">
     <div class="row mt-5">
@@ -131,6 +132,7 @@
         {
             resultado = "Access";
             NavigationManager.NavigateTo("/Index");
+            SharedState.CodEmisor = selectedEmisor;
         }
         else
         {
