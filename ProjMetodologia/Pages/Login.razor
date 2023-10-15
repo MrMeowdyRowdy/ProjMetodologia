@@ -8,66 +8,68 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<div class="row mt-5">
-    <div class="col-lg-4 offset-lg-4 border" style="border-radius: 10px; background-color:#34495E">
-        <p></p>
-        <div class="d-flex mb-3 pb-1 align-items-center">
-            <img src="Images/logoExample.png" alt="Logo de la empresa" class="img-fluid" style="max-width: 50px; max-height: 50px;" />
-            <span class="h1 fw-bold mb-0" style="color:white">Login</span>
-        </div>
-        <div class="mb-3">
-            <label style="color:#D0ECE7">Usuario</label>
-            <input @bind="user.Username" class="form-control" style="background-color:#EBEDEF"/>
-        </div>
-        <div class="mb-3">
-            <label style="color:#D0ECE7">Contraseña</label>
-            <input @bind="user.Password" class="form-control" type="password" style="background-color:#EBEDEF" />
-        </div>
-        <div class="mb-3">
-            <button @onclick="GetUser" class="btn btn-primary" style="background-color:#D0ECE7; color:black">Login</button>
-        </div>
-        <div class="mb-3">
-            @if (apiResponse != null)
-            {
-                if (apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+<body>
+    <div class="row mt-5">
+        <div class="col-lg-4 offset-lg-4 border" style="border-radius: 10px; background-color:#34495E">
+            <p></p>
+            <div class="d-flex mb-3 pb-1 align-items-center">
+                <img src="Images/logoExample.png" alt="Logo de la empresa" class="img-fluid" style="max-width: 50px; max-height: 50px;" />
+                <span class="h1 fw-bold mb-0" style="color:white">Login</span>
+            </div>
+            <div class="mb-3">
+                <label style="color:#D0ECE7">Usuario</label>
+                <input @bind="user.Username" class="form-control" style="background-color:#EBEDEF" />
+            </div>
+            <div class="mb-3">
+                <label style="color:#D0ECE7">Contraseña</label>
+                <input @bind="user.Password" class="form-control" type="password" style="background-color:#EBEDEF" />
+            </div>
+            <div class="mb-3">
+                <button @onclick="GetUser" class="btn btn-primary" style="background-color:#D0ECE7; color:black">Login</button>
+            </div>
+            <div class="mb-3">
+                @if (apiResponse != null)
                 {
-                    <p class="text-success">@mensaje</p>
-                    @if (showDropdown && apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+                    if (apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
                     {
-                        <div class="mb-3">
-                            <label style="color:#D0ECE7">Emisor</label>
-                            <select @bind="selectedEmisor" class="form-control">
-                                <option value="">Seleccione un emisor</option>
-                                @foreach (var emisor in apiResponseE)
-                                {
-                                    <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <button @onclick="Validate" class="btn btn-primary" style="background-color:#D0ECE7; color:black">Continuar</button>
-                        </div>
-                        <div class="mb-3">
-                            <p class="text-success">@resultado</p>
-                        </div>
+                        <p class="text-success">@mensaje</p>
+                        @if (showDropdown && apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+                        {
+                            <div class="mb-3">
+                                <label style="color:#D0ECE7">Emisor</label>
+                                <select @bind="selectedEmisor" class="form-control">
+                                    <option value="">Seleccione un emisor</option>
+                                    @foreach (var emisor in apiResponseE)
+                                    {
+                                        <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <button @onclick="Validate" class="btn btn-primary" style="background-color:#D0ECE7; color:black">Continuar</button>
+                            </div>
+                            <div class="mb-3">
+                                <p class="text-success">@resultado</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-danger">@apiResponse[0].OBSERVACION</p>
                     }
                 }
                 else
                 {
-                    <p class="text-danger">@apiResponse[0].OBSERVACION</p>
+                    <p class="text-danger">@mensaje</p>
                 }
-            }
-            else
-            {
-                <p class="text-danger">@mensaje</p>
-            }
-        </div>
-        <div class="d-grid justify-content-md-end">
-            <button @onclick="LimpiarCampos" class="btn btn-secondary justify-content-md-end">Cancelar</button>
-            <p></p>
+            </div>
+            <div class="d-grid justify-content-md-end">
+                <button @onclick="LimpiarCampos" class="btn btn-secondary justify-content-md-end">Cancelar</button>
+                <p></p>
+            </div>
         </div>
     </div>
-</div>
+</body>
 
 @code {
     private UserDto user = new UserDto();
