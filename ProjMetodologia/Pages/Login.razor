@@ -103,6 +103,11 @@
             mensaje = "FALLO EN EL ACCESO";
             apiResponse = null;
         }
+        catch (Exception e)
+        {
+            mensaje = "FALLO EN EL ACCESO";
+            apiResponse = null;
+        }
     }
 
     private async Task GetEmisorData()
