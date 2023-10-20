@@ -1,0 +1,71 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+
+@page "/ListaTrabajador"
+@inject HttpClient Http
+@inject SharedStateService SharedState
+
+<h3>Lista de Trabajadores</h3>
+<h3>Sede: @SharedState.CodEmisor</h3>
+
+@if (trabajadorApiE != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Identificacion</th>
+                <th>CarnetIESS</th>
+                <th>Genero</th>
+                <th>Nivel Salarial</th>
+                <th>Fecha Ingreso</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in trabajadorApiE)
+            {
+                <tr>
+                    <td>@item.Nombres</td>
+                    <td>@($"{item.Apellido_Paterno} {item.Apellido_Materno}")</td>
+                    <td>@item.Identificacion</td>
+                    <td>@item.CarnetIESS</td>
+                    <td>@item.Genero</td>
+                    <td>@item.Nivel_Salarial</td>
+                    <td>@item.FechaIngreso.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+
+    private List<Trabajador> trabajadorApiE = new List<Trabajador>();
+
+    private async Task GetTrabajadorData()
+    {
+        var apiName = $"api/Varios/TrabajadorSelect?sucursal={SharedState.CodEmisor}";
+
+        try
+        {
+            trabajadorApiE = await Http.GetFromJsonAsync<List<Trabajador>>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del usuario: {e.Message}");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTrabajadorData();
+    }
+
+}

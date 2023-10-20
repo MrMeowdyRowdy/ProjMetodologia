@@ -8,6 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSingleton<SharedStateService>();
+
+builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri(@"http://apiservicios.ecuasolmovsa.com:3009/")
+    });
 
 var app = builder.Build();
 
