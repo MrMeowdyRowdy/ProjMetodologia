@@ -10,8 +10,4 @@
     <None Include="wwwroot\Images\logoExample.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\js\" />
-  </ItemGroup>
-
 </Project>
