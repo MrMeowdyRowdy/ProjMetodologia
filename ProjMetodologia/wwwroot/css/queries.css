@@ -41,6 +41,8 @@
 
     /* sign-up card */
     .sign-up-card {
+        display: flex;
+        align-items: center;
         max-width: 100rem;
         padding: 3rem;
         display: grid;
