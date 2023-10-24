@@ -295,6 +295,37 @@ hr {
     padding: 20px;
 }
 
+/* Estilo para el efecto de difuminado */
+.nav-blur {
+    filter: blur(5px); /* Puedes ajustar el valor de difuminado según tus preferencias */
+    background-color: var(--dark-slate-grey); /* Color de fondo para el efecto de difuminado */
+    padding: 20px; /* Ajusta el relleno según sea necesario */
+    transition: filter 0.3s ease-in-out; /* Añade una transición suave al efecto de difuminado */
+}
+
+/* Estilo para el texto y los enlaces en la barra de navegación */
+.nav-item {
+    color: var(--white); /* Color de texto para los elementos de navegación */
+    padding: 10px 0; /* Ajusta el relleno según sea necesario */
+}
+
+.nav-link {
+    color: var(--white); /* Color de enlace para los elementos de navegación */
+    font-size: 1.6rem;
+    text-decoration: none; /* Elimina la subrayado del enlace si es necesario */
+}
+
+    .nav-link:hover {
+        color: var(--tomato); /* Cambia el color del enlace al pasar el ratón sobre él si es necesario */
+    }
+
+.navbar-brand {
+    font-size: 1.6rem;
+}
+.navbar-toggler {
+    font-size: 1.6rem;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
