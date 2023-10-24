@@ -13,6 +13,10 @@
     font-weight: 700;
 }
 
+.white-text {
+    color: white;
+}
+
 /* Colors */
 :root {
     /* PRIMARY */
@@ -133,7 +137,6 @@ li {
 
 .sign-up-list {
     padding: 0 3rem;
-    list-style-image: url("../images/icon-list.svg");
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -219,6 +222,7 @@ li {
 .dismiss-btn {
     align-self: stretch;
     margin-top: auto;
+    font-size: 1.6rem;
 }
 
 /* Footer */
