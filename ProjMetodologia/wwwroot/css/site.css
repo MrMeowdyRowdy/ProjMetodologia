@@ -69,11 +69,15 @@ main {
     background-color: var(--white);
     color: var(--dark-slate-grey);
     box-shadow: 0 0 7rem 1rem #00000055;
-    width: 100%;
-    max-width: 48rem;
-    min-height: calc(100vh - 5rem);
+    width: 60%; /* Ajusta el ancho según tus necesidades */
+    min-height: 70vh; /* Ajusta la altura mínima según tus necesidades */
     margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+
 
 h2 {
     font-size: 4rem;
@@ -109,10 +113,15 @@ li {
     .btn:focus {
         outline: 0.2rem dotted var(--dark-slate-grey);
     }
+.submit-btn {
+    margin-top: 1rem;
+    font-size: 1.6rem;
+}
 
 /* sign-up card */
 .sign-up-img {
     width: 100%;
+    height: auto;
 }
 
 .sign-up-text {
@@ -145,6 +154,7 @@ li {
         padding: 1.5rem 2rem;
         border: 0.1rem solid var(--grey);
         border-radius: 0.7rem;
+        font-size: 1.6rem;
     }
 
         .sign-up-form select:focus {
@@ -153,12 +163,14 @@ li {
 
     .sign-up-form label {
         font-weight: 700;
+        font-size: 1.6rem;
     }
 
     .sign-up-form input {
         padding: 1.5rem 2rem;
         border: 0.1rem solid var(--grey);
         border-radius: 0.7rem;
+        font-size: 1.6rem;
     }
 
         .sign-up-form input:focus {
@@ -184,9 +196,7 @@ li {
         display: block;
     }
 
-.submit-btn {
-    margin-top: 1rem;
-}
+
 
 /* success card */
 .success-card {
@@ -264,6 +274,22 @@ hr {
     justify-content: center;
 }
 
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-column {
+    flex: 1;
+    padding: 20px;
+}
+
+.right-column {
+    flex: 1;
+    padding: 20px;
+}
 
 #blazor-error-ui {
     background: lightyellow;

@@ -10,69 +10,75 @@
 @inject SharedStateService SharedState
 
 <div class="card sign-up-card">
-    <div class="sign-up-text">
-        <img class="sign-up-img"
-             src="./Images/illustration-sign-up-mobile.svg"
-             alt="" />
-        <h2>Login</h2>
-            <form class="sign-up-form" onsubmit="@(async () => { await GetUser(); })">
-                <label>Usuario</label>
-            <input @bind="user.Username" class="form-control" placeholder="XXXX" />
-                <label>Contraseña</label>
-            <input @bind="user.Password" class="form-control" type="password" placeholder="XXXXX" />
-            <button type="submit" class="btn submit-btn" style="@(loginSuccessful ? "display: none;" : "")">Login</button>
-            </form>
-        <form class="sign-up-form" onsubmit="@(async () => { await GetUser(); await GetEmisorData();})">
-            <div class="mb-3">
-                @if (apiResponse != null)
-                {
-                    if (apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
-                    {
-                        @if (showDropdown)
+    <div class="flex-container">
+        <div class="left-column">
+            <div class="sign-up-text">
+                <h2>Login</h2>
+                <form class="sign-up-form" onsubmit="@(async () => { await GetUser(); })">
+                    <label>Usuario</label>
+                    <input @bind="user.Username" class="form-control" placeholder="XXXX" />
+                    <label>Contraseña</label>
+                    <input @bind="user.Password" class="form-control" type="password" placeholder="XXXXX" />
+                    <button type="submit" class="btn submit-btn" style="@(loginSuccessful ? "display: none;" : "")">Login</button>
+                </form>
+                <form class="sign-up-form" onsubmit="@(async () => { await GetUser(); await GetEmisorData();})">
+                    <div class="mb-3">
+                        @if (apiResponse != null)
                         {
-                            <div class="mb-3">
-                                <label class="mb-3">Emisor</label>
-                                <select @bind="selectedEmisor" class="form-control">
-                                    <option value="">Seleccione un emisor</option>
-                                    @foreach (var emisor in apiResponseE)
-                                    {
-                                        <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="container; d-inline-block" style="display: flex; justify-content: center;">
-                                <button type="submit" @onclick="Validate" class="btn submit-btn">Continuar</button>
-                                <div class="popup" style="@(showPopup ? "display: block;" : "display: none;")">
-                                    <div class="popup-content">
-                                        <div class="card success-card">
-                                            <img src="Images/icon-success.svg" alt="" />
-                                            <h2>You have selected an incorrect emisor!</h2>
-                                            <p>Please click Try again for a new chance.</p>
-                                            <button @onclick="ClosePopup" class="btn dismiss-btn">Try again</button>
-                                        </div>
+                            if (apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+                            {
+                                @if (showDropdown)
+                                {
+                                    <div class="mb-3">
+                                        <label class="mb-3">Emisor</label>
+                                        <select @bind="selectedEmisor" class="form-control">
+                                            <option value="">Seleccione un emisor</option>
+                                            @foreach (var emisor in apiResponseE)
+                                            {
+                                                <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
+                                            }
+                                        </select>
                                     </div>
-                                </div>
+                                    <div class="container; d-inline-block" style="display: flex; justify-content: center;">
+                                        <button type="submit" @onclick="Validate" class="btn submit-btn">Continuar</button>
+                                        <div class="popup" style="@(showPopup ? "display: block;" : "display: none;")">
+                                            <div class="popup-content">
+                                                <div class="card success-card">
+                                                    <img src="Images/icon-success.svg" alt="" />
+                                                    <h2>You have selected an incorrect emisor!</h2>
+                                                    <p>Please click Try again for a new chance.</p>
+                                                    <button @onclick="ClosePopup" class="btn dismiss-btn">Try again</button>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <button @onclick="LimpiarCampos" class="btn submit-btn">Cancelar</button>
-                            </div>
+                                        <button @onclick="LimpiarCampos" class="btn submit-btn">Cancelar</button>
+                                    </div>
 
-                            <div class="mb-3">
-                                <p class="text-success">@resultado</p>
-                            </div>
+                                    <div class="mb-3">
+                                        <p class="text-success">@resultado</p>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-danger">@apiResponse[0].OBSERVACION</p>
+
+                            }
                         }
-                    }
-                    else
-                    {
-                        <p class="text-danger">@apiResponse[0].OBSERVACION</p>
-     
-                    }
-                }
-                else
-                {
-                    <p class="text-danger">@mensaje</p>
-                }
+                        else
+                        {
+                            <p class="text-danger">@mensaje</p>
+                        }
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+        <div class="right-column">
+                <img class="sign-up-img"
+                     src="./Images/illustration-sign-up-desktop.svg"
+                     alt="" />
+        </div>
     </div>
 </div>
 
