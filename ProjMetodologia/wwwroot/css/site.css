@@ -1,37 +1,329 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+/* Fonts */
+/* 400 */
+@font-face {
+    font-family: robotoCustom;
+    src: url(../fonts/Roboto-Regular.ttf);
+    font-weight: 400;
 }
 
-h1:focus {
-    outline: none;
+/* 700 */
+@font-face {
+    font-family: robotoCustom;
+    src: url(../fonts/Roboto-Bold.ttf);
+    font-weight: 700;
 }
 
-a, .btn-link {
-    color: #0071c1;
+.white-text {
+    color: white;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+/* Colors */
+:root {
+    /* PRIMARY */
+    --tomato: hsl(4, 100%, 67%);
+    --tomato-light: hsl(4, 100%, 95%);
+    /* NEUTRAL */
+    --dark-slate-grey: hsl(234, 29%, 20%);
+    --charcoal-grey: hsl(235, 18%, 26%);
+    --grey: hsl(231, 7%, 60%);
+    --white: hsl(0, 0%, 100%);
+    /* GRADIENT */
+    --gradient-pink: #ff3e83;
+    --gradient-orange: #fd634a;
+    --gradient-shadow: #ff3e8355;
 }
 
-.content {
-    padding-top: 1.1rem;
+/* General Styling */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+html {
+    font-size: 62.5%;
 }
 
-.invalid {
-    outline: 1px solid red;
+body {
+    font-family: robotoCustom, sans-serif;
+    line-height: 1;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--white);
+    background-color: var(--charcoal-grey);
+    min-width: 29rem;
 }
 
-.validation-message {
-    color: red;
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Main */
+main {
+    min-height: calc(100vh - 5rem);
+}
+
+.card {
+    background-color: var(--white);
+    color: var(--dark-slate-grey);
+    box-shadow: 0 0 7rem 1rem #00000055;
+    width: 60%; /* Ajusta el ancho según tus necesidades */
+    min-height: 70vh; /* Ajusta la altura mínima según tus necesidades */
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+h2 {
+    font-size: 4rem;
+}
+
+p,
+li {
+    line-height: 1.5;
+}
+
+.btn {
+    cursor: pointer;
+    padding: 2rem;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--dark-slate-grey);
+    border-radius: 0.7rem;
+    border: none;
+    transition: transform 0.4s ease-in-out;
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+    .btn:hover {
+        background: linear-gradient( 90deg, var(--gradient-pink), var(--gradient-orange) );
+        box-shadow: 0 1rem 1.5rem var(--gradient-shadow);
+    }
+
+    .btn:active {
+        transform: scale(0.98);
+        box-shadow: none;
+    }
+
+    .btn:focus {
+        outline: 0.2rem dotted var(--dark-slate-grey);
+    }
+.submit-btn {
+    margin-top: 1rem;
+    font-size: 1.6rem;
+}
+
+/* sign-up card */
+.sign-up-img {
+    width: 100%;
+    height: auto;
+}
+
+.sign-up-text {
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.sign-up-list {
+    padding: 0 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+    .sign-up-list li {
+        padding-left: 1rem;
+    }
+
+.sign-up-form {
+    position: relative;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+    .sign-up-form select {
+        padding: 1.5rem 2rem;
+        border: 0.1rem solid var(--grey);
+        border-radius: 0.7rem;
+        font-size: 1.6rem;
+    }
+
+        .sign-up-form select:focus {
+            outline: 0.2rem dotted var(--dark-slate-grey);
+        }
+
+    .sign-up-form label {
+        font-weight: 700;
+        font-size: 1.6rem;
+    }
+
+    .sign-up-form input {
+        padding: 1.5rem 2rem;
+        border: 0.1rem solid var(--grey);
+        border-radius: 0.7rem;
+        font-size: 1.6rem;
+    }
+
+        .sign-up-form input:focus {
+            outline: 0.2rem dotted var(--dark-slate-grey);
+        }
+
+    .sign-up-form .error-message {
+        color: var(--tomato);
+        font-weight: 700;
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: none;
+    }
+
+    .sign-up-form.error input {
+        background-color: var(--tomato-light);
+        border-color: var(--tomato);
+        color: var(--tomato);
+    }
+
+    .sign-up-form.error .error-message {
+        display: block;
+    }
+
+
+
+/* success card */
+.success-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 3rem;
+}
+
+    .success-card img {
+        margin-top: auto;
+    }
+
+.submitted-email {
+    font-weight: 700;
+}
+
+.dismiss-btn {
+    align-self: stretch;
+    margin-top: auto;
+    font-size: 1.6rem;
+}
+
+/* Footer */
+footer {
+    height: 5rem;
+    min-width: 17rem;
+    color: var(--white);
+    background-color: transparent;
+    font-size: 1.3rem;
+    line-height: 1.3;
+    gap: 1rem;
+}
+
+.attribution {
+    font-size: 1.1rem;
+}
+
+    .attribution a:link,
+    .attribution a:visited {
+        color: var(--white);
+        padding: 0.1rem;
+        text-decoration: none;
+    }
+
+    .attribution a:hover,
+    .attribution a:active {
+        color: var(--tomato);
+        border-bottom: 0.1rem solid var(--tomato);
+    }
+
+    .attribution a:focus {
+        outline: 0.2rem dotted var(--tomato);
+    }
+
+
+
+
+/* REWRITE SITE FABS */
+
+hr {
+    background: linear-gradient( 90deg, var(--gradient-pink), var(--gradient-orange) );
+    box-shadow: 0 1rem 1.5rem var(--gradient-shadow);
+    transform: scale(0.98);
+    outline: 0.2rem dotted var(--dark-slate-grey);
+    border: none;
+    border-top: 2px solid black;
+    margin: 20px 0;
+    width: 100%
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-column {
+    flex: 1;
+    padding: 20px;
+}
+
+.right-column {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Estilo para el efecto de difuminado */
+.nav-blur {
+    filter: blur(5px); /* Puedes ajustar el valor de difuminado según tus preferencias */
+    background-color: var(--dark-slate-grey); /* Color de fondo para el efecto de difuminado */
+    padding: 20px; /* Ajusta el relleno según sea necesario */
+    transition: filter 0.3s ease-in-out; /* Añade una transición suave al efecto de difuminado */
+}
+
+/* Estilo para el texto y los enlaces en la barra de navegación */
+.nav-item {
+    color: var(--white); /* Color de texto para los elementos de navegación */
+    padding: 10px 0; /* Ajusta el relleno según sea necesario */
+}
+
+.nav-link {
+    color: var(--white); /* Color de enlace para los elementos de navegación */
+    font-size: 1.6rem;
+    text-decoration: none; /* Elimina la subrayado del enlace si es necesario */
+}
+
+    .nav-link:hover {
+        color: var(--tomato); /* Cambia el color del enlace al pasar el ratón sobre él si es necesario */
+    }
+
+.navbar-brand {
+    font-size: 1.6rem;
+}
+.navbar-toggler {
+    font-size: 1.6rem;
 }
 
 #blazor-error-ui {
@@ -62,3 +354,33 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}

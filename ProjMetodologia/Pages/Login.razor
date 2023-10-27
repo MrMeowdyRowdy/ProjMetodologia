@@ -9,65 +9,75 @@
 @inject NavigationManager NavigationManager
 @inject SharedStateService SharedState
 
-<div class="background">
-    <div class="row mt-5">
-        <div class="col-lg-4 offset-lg-4 border" style="border-radius: 10px; background-color:#34495E">
-            <p></p>
-            <div class="d-flex mb-3 pb-1 align-items-center">
-                <img src="Images/logoExample.png" alt="Logo de la empresa" class="img-fluid" style="max-width: 50px; max-height: 50px;" />
-                <span class="h1 fw-bold mb-0" style="color:white">Login</span>
-            </div>
-            <div class="mb-3">
-                <label style="color:#D0ECE7">Usuario</label>
-                <input @bind="user.Username" class="form-control" style="background-color:#EBEDEF" />
-            </div>
-            <div class="mb-3">
-                <label style="color:#D0ECE7">Contraseña</label>
-                <input @bind="user.Password" class="form-control" type="password" style="background-color:#EBEDEF" />
-            </div>
-            <div class="mb-3">
-                <button @onclick="GetUser" class="btn btn-primary" style="background-color:#D0ECE7; color:black">Login</button>
-            </div>
-            <div class="mb-3">
-                @if (apiResponse != null)
-                {
-                    if (apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
-                    {
-                        <p class="text-success">@mensaje</p>
-                        @if (showDropdown && apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+<div class="card sign-up-card">
+    <div class="flex-container">
+        <div class="left-column">
+            <div class="sign-up-text">
+                <h2>Login</h2>
+                <form class="sign-up-form" onsubmit="@(async () => { await GetUser(); })">
+                    <label>Usuario</label>
+                    <input @bind="user.Username" class="form-control" placeholder="XXXX" />
+                    <label>Contraseña</label>
+                    <input @bind="user.Password" class="form-control" type="password" placeholder="XXXXX" />
+                    <button type="submit" class="btn submit-btn" style="@(loginSuccessful ? "display: none;" : "")">Login</button>
+                </form>
+                <form class="sign-up-form" onsubmit="@(async () => { await GetUser(); await GetEmisorData();})">
+                    <div class="mb-3">
+                        @if (apiResponse != null)
                         {
-                            <div class="mb-3">
-                                <label style="color:#D0ECE7">Emisor</label>
-                                <select @bind="selectedEmisor" class="form-control">
-                                    <option value="">Seleccione un emisor</option>
-                                    @foreach (var emisor in apiResponseE)
-                                    {
-                                        <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <button @onclick="Validate" class="btn btn-primary" style="background-color:#D0ECE7; color:black">Continuar</button>
-                            </div>
-                            <div class="mb-3">
-                                <p class="text-success">@resultado</p>
-                            </div>
+                            if (apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+                            {
+                                @if (showDropdown)
+                                {
+                                    <div class="mb-3">
+                                        <label class="mb-3">Emisor</label>
+                                        <select @bind="selectedEmisor" class="form-control">
+                                            <option value="">Seleccione un emisor</option>
+                                            @foreach (var emisor in apiResponseE)
+                                            {
+                                                <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="container; d-inline-block" style="display: flex; justify-content: center;">
+                                        <button type="submit" @onclick="Validate" class="btn submit-btn">Continuar</button>
+                                        <div class="popup" style="@(showPopup ? "display: block;" : "display: none;")">
+                                            <div class="popup-content">
+                                                <div class="card success-card">
+                                                    <img src="Images/icon-success.svg" alt="" />
+                                                    <h2>You have selected an incorrect emisor!</h2>
+                                                    <p>Please click Try again for a new chance.</p>
+                                                    <button @onclick="ClosePopup" class="btn dismiss-btn">Try again</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button @onclick="LimpiarCampos" class="btn submit-btn">Cancelar</button>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <p class="text-success">@resultado</p>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-danger">@apiResponse[0].OBSERVACION</p>
+
+                            }
                         }
-                    }
-                    else
-                    {
-                        <p class="text-danger">@apiResponse[0].OBSERVACION</p>
-                    }
-                }
-                else
-                {
-                    <p class="text-danger">@mensaje</p>
-                }
+                        else
+                        {
+                            <p class="text-danger">@mensaje</p>
+                        }
+                    </div>
+                </form>
             </div>
-            <div class="d-grid justify-content-md-end">
-                <button @onclick="LimpiarCampos" class="btn btn-secondary justify-content-md-end">Cancelar</button>
-                <p></p>
-            </div>
+        </div>
+        <div class="right-column">
+                <img class="sign-up-img"
+                     src="./Images/illustration-sign-up-desktop.svg"
+                     alt="" />
         </div>
     </div>
 </div>
@@ -78,7 +88,9 @@
     private List<Emisor> apiResponseE = new List<Emisor>();
     private int selectedEmisor;
     private bool showDropdown = false;
-    private String resultado, mensaje;
+    private string resultado, mensaje;
+    private bool loginSuccessful = false;
+    private bool showPopup = false;
 
     private async Task GetUser()
     {
@@ -86,8 +98,9 @@
         if (apiResponse != null)
         {
             await GetEmisorData();
+            showDropdown = true;
+            loginSuccessful = true; // Actualiza la variable de estado
         }
-        showDropdown = true;
     }
 
     private async Task GetUserData()
@@ -98,46 +111,77 @@
         {
             apiResponse = await Http.GetFromJsonAsync<User[]>(apiName);
             mensaje = apiResponse[0].OBSERVACION;
+
+            if (apiResponse != null && apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+            {
+                await GetEmisorData();
+                showDropdown = true;
+                loginSuccessful = true;
+            }
+            else
+            {
+                loginSuccessful = false; // Agrega esta línea
+                LimpiarCampos();
+            }
         }
         catch (HttpRequestException e)
         {
             mensaje = "FALLO EN EL ACCESO";
             apiResponse = null;
+            loginSuccessful = false; // Agrega esta línea
+            LimpiarCampos();
         }
         catch (Exception e)
         {
             mensaje = "FALLO EN EL ACCESO";
             apiResponse = null;
+            loginSuccessful = false; // Agrega esta línea
+            LimpiarCampos();
         }
     }
 
     private async Task GetEmisorData()
-    {
-        var apiEmisor = "api/Varios/GetEmisor";
+{
+    var apiEmisor = "api/Varios/GetEmisor";
 
-        try
+    try
+    {
+        apiResponseE = await Http.GetFromJsonAsync<List<Emisor>>(apiEmisor);
+        if (apiResponse != null && apiResponse.Length > 0)
         {
-            apiResponseE = await Http.GetFromJsonAsync<List<Emisor>>(apiEmisor);
-            selectedEmisor = apiResponse.Length > 0 ? apiResponse[0]?.Emisor ?? 0 : 0;
+            selectedEmisor = apiResponse[0]?.Emisor ?? 0;
         }
-        catch (HttpRequestException e)
+        else
         {
-            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+            selectedEmisor = 0; // Asignar un valor predeterminado en caso de que apiResponse sea nulo o no contenga elementos
         }
     }
+    catch (HttpRequestException e)
+    {
+        Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+    }
+}
+
 
     private void Validate()
     {
-        if (selectedEmisor == apiResponse[0].Emisor)
+        if (loginSuccessful && selectedEmisor == apiResponse[0].Emisor)
         {
             resultado = "Access";
             NavigationManager.NavigateTo("/Index");
             SharedState.CodEmisor = selectedEmisor;
+            showPopup = false;
         }
         else
         {
             resultado = "";
+            showPopup = true;
         }
+    }
+
+    private void ClosePopup()
+    {
+        showPopup = false;
     }
 
     private void LimpiarCampos()
@@ -149,6 +193,7 @@
         resultado = string.Empty;
         showDropdown = false;
         mensaje = string.Empty;
+        loginSuccessful = false;
     }
 
 }
