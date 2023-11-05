@@ -1,0 +1,106 @@
+﻿@using ProjMetodologia.Data
+@using ProjMetodologia.Data.MovimientoPlanilla
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@page "/CreateMovimientoPlanilla"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Agregar centro de costos</h3>
+
+<form @onsubmit="CreateMovimientoPlanillaData">
+
+    <div class="form-group">
+        <label for="Concepto">Concepto:</label>
+        <input type="text" id="Concepto" class="form-control" @bind="movimientoPlanilla.Concepto" />
+    </div>
+    <div class="form-group">
+        <label for="Prioridad">Prioridad:</label>
+        <input type="number" id="Prioridad" class="form-control" @bind="movimientoPlanilla.Prioridad" />
+    </div>
+    <div class="form-group">
+        <label for="TipoOperacion">Tipo de Operacion:</label>
+        <input type="text" id="TipoOperacion" class="form-control" @bind="movimientoPlanilla.TipoOperacion" />
+    </div>
+    <div class="form-group">
+        <label for="Cuenta1">Cuenta 1:</label>
+        <input type="text" id="Cuenta1" class="form-control" @bind="movimientoPlanilla.Cuenta1" />
+    </div>
+    <div class="form-group">
+        <label for="Cuenta2">Cuenta 2:</label>
+        <input type="text" id="Cuenta2" class="form-control" @bind="movimientoPlanilla.Cuenta2" />
+    </div>
+    <div class="form-group">
+        <label for="Cuenta3">Cuenta 3:</label>
+        <input type="text" id="Cuenta3" class="form-control" @bind="movimientoPlanilla.Cuenta3" />
+    </div>
+    <div class="form-group">
+        <label for="Cuenta4">Cuenta 4:</label>
+        <input type="text" id="Cuenta4" class="form-control" @bind="movimientoPlanilla.Cuenta4" />
+    </div>
+    <div class="form-group">
+        <label for="MovimientoExcepcion1">Movimiento Excepcion 1:</label>
+        <input type="text" id="MovimientoExcepcion1" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion1" />
+    </div>
+    <div class="form-group">
+        <label for="MovimientoExcepcion2">Movimiento Excepcion 2:</label>
+        <input type="text" id="MovimientoExcepcion2" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion2" />
+    </div>
+    <div class="form-group">
+        <label for="MovimientoExcepcion3">Movimiento Excepcion 3:</label>
+        <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion3" />
+    </div>
+    <div class="form-group">
+        <label for="Aplica_iess">Aplica iess:</label>
+        <input type="text" id="Aplica_iess" class="form-control" @bind="movimientoPlanilla.Aplica_iess" />
+    </div>
+    <div class="form-group">
+        <label for="Aplica_imp_renta">Aplica impuesto a la renta:</label>
+        <input type="text" id="Aplica_imp_renta" class="form-control" @bind="movimientoPlanilla.Aplica_imp_renta" />
+    </div>
+    <div class="form-group">
+        <label for="Empresa_Afecta_Iess">Empresa Afecta al Iess:</label>
+        <input type="text" id="Empresa_Afecta_Iess" class="form-control" @bind="movimientoPlanilla.Empresa_Afecta_Iess" />
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@code {
+    private MovimientoPlanilla movimientoPlanilla = new MovimientoPlanilla();
+    private MovimientoPlanilla[] apiResponse;
+
+
+    private async Task CreateMovimientoPlanillaData()
+    {
+        // var apiName = $"api/Varios/CentroCostosInsert?codigocentrocostos={centroCostos.Codigo}&descripcioncentrocostos={centroCostos.NombreCentroCostos}";
+
+        // try
+        // {
+        //     var response = await Http.PostAsJsonAsync(apiName, centroCostos);
+
+        //     if (response.IsSuccessStatusCode)
+        //     {
+        //         apiResponse = await response.Content.ReadFromJsonAsync<CentroCostos[]>();
+
+        //         if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("Ingreso Exitoso"))
+        //         {
+        //             NavigationManager.NavigateTo("/CentroCostos");
+        //         }
+        //         else if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("El registro que desea ingresar ya existe"))
+        //         {
+
+        //         }
+        //     }
+        //     else
+        //     {
+
+        //     }
+        // }
+        // catch (HttpRequestException e)
+        // {
+        //     Console.WriteLine($"Error al crear Centro de Costos: {e.Message}");
+        // }
+    }
+}

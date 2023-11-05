@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using ProjMetodologia.Data;
 using ProjMetodologia.Data.CentroCosto;
+using ProjMetodologia.Data.MovimientoPlanilla;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<SharedStateService>();
 builder.Services.AddSingleton<SharedCentroCostos>();
+builder.Services.AddSingleton<SharedMovimientoPlanilla>();
 
 builder.Services.AddScoped(sp =>
     new HttpClient

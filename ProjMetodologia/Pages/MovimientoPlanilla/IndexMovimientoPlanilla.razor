@@ -1,0 +1,130 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+@using Data.Trabajador;
+@using ProjMetodologia.Data.MovimientoPlanilla
+
+@page "/MovimientoPlanilla"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject SharedMovimientoPlanilla sharedMovimientoPlanilla
+
+
+<h3>Movimiento planilla</h3>
+
+<button class="btn btn-success" @onclick="CreateMovimientoPlanilla">Create</button>
+
+@if (movimientosPlanilla != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="white-text">CodigoConcepto</th>
+                <th class="white-text">Concepto</th>
+                <th class="white-text">Prioridad</th>
+                <th class="white-text">TipoOperacion</th>
+                <th class="white-text">Cuenta1</th>
+                <th class="white-text">Cuenta2</th>
+                <th class="white-text">Cuenta3</th>
+                <th class="white-text">Cuenta4</th>
+                <th class="white-text">MovimientoExcepcion1</th>
+                <th class="white-text">MovimientoExcepcion2</th>
+                <th class="white-text">MovimientoExcepcion3</th>
+                <th class="white-text">Aplica_iess</th>
+                <th class="white-text">Aplica_imp_renta</th>
+                <th class="white-text">Empresa_Afecta_Iess</th>
+                <th class="white-text">Mensaje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var movimiento in movimientosPlanilla)
+            {
+                <tr>
+                    <td class="white-text">@movimiento.CodigoConcepto</td>
+                    <td class="white-text">@movimiento.Concepto</td>
+                    <td class="white-text">@movimiento.Prioridad</td>
+                    <td class="white-text">@movimiento.TipoOperacion</td>
+                    <td class="white-text">@movimiento.Cuenta1</td>
+                    <td class="white-text">@movimiento.Cuenta2</td>
+                    <td class="white-text">@movimiento.Cuenta3</td>
+                    <td class="white-text">@movimiento.Cuenta4</td>
+                    <td class="white-text">@movimiento.MovimientoExcepcion1</td>
+                    <td class="white-text">@movimiento.MovimientoExcepcion2</td>
+                    <td class="white-text">@movimiento.MovimientoExcepcion3</td>
+                    <td class="white-text">@movimiento.Aplica_iess</td>
+                    <td class="white-text">@movimiento.Aplica_imp_renta</td>
+                    <td class="white-text">@movimiento.Empresa_Afecta_Iess</td>
+                    <td class="white-text">@movimiento.Mensaje</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditMovimientoPlanilla(movimiento)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteMovimientoPlanilla(movimiento)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private List<MovimientoPlanilla> movimientosPlanilla = new List<MovimientoPlanilla>();
+    private MovimientoPlanilla movimientoPlanilla;
+    private ResponseMovimientoPlanilla[] apiResponse;
+
+    private async Task GetCentroCostosData()
+    {
+        var apiName = $"api/Varios/MovimientoPlanillaSelect";
+
+        try
+        {
+            movimientosPlanilla = await Http.GetFromJsonAsync<List<MovimientoPlanilla>>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos de movimientos de planilla: {e.Message}");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCentroCostosData();
+    }
+
+    private void EditMovimientoPlanilla(MovimientoPlanilla movimientoPlanillaU)
+    {
+        sharedMovimientoPlanilla.SetValue(movimientoPlanillaU);
+        NavigationManager.NavigateTo("/UpdateMovimientoPlanilla");
+    }
+
+    private async Task DeleteMovimientoPlanilla(MovimientoPlanilla movimientoPlanillaD)
+    {
+        var apiName = $"api/Varios/MovimeintoPlanillaDelete?codigomovimiento={movimientoPlanillaD.CodigoConcepto}&descripcionomovimiento={movimientoPlanillaD.Concepto}";
+
+        try
+        {
+            apiResponse = await Http.GetFromJsonAsync<ResponseMovimientoPlanilla[]>(apiName);
+
+            if (apiResponse != null && apiResponse[0].Concepto.Equals("Eliminación Exitosa"))
+            {
+                NavigationManager.NavigateTo("/MovimientoPlanilla");
+            }
+            else
+            {
+
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al eliminar Centro de Costos: {e.Message}");
+        }
+    }
+
+    private void CreateMovimientoPlanilla()
+    {
+        NavigationManager.NavigateTo("/CreateMovimientoPlanilla");
+    }
+}
