@@ -1,9 +1,11 @@
 ﻿@using ProjMetodologia.Data
+@using ProjMetodologia.Data.CentroCosto
 @using System.Net.Http
 @using System.Net.Http.Json
 
 @page "/CreateCentroCostos"
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <h3>Agregar centro de costos</h3>
 
@@ -32,19 +34,27 @@
         {
             var response = await Http.PostAsJsonAsync(apiName, centroCostos);
 
-            if (apiResponse != null && apiResponse[0].Mensaje.Equals("Ingreso Exitoso"))
+            if (response.IsSuccessStatusCode)
             {
-                // You can handle the successful creation, such as redirection or showing a success message.
+                apiResponse = await response.Content.ReadFromJsonAsync<CentroCostos[]>();
+
+                if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("Ingreso Exitoso"))
+                {
+                    NavigationManager.NavigateTo("/CentroCostos");
+                }
+                else if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("El registro que desea ingresar ya existe"))
+                {
+                    
+                }
             }
             else
             {
-                // Handle the case where the creation was not successful (e.g., display an error message).
+                
             }
         }
         catch (HttpRequestException e)
         {
-            Console.WriteLine($"Error while creating Centro de Costos: {e.Message}");
-            // Handle the error as needed.
+            Console.WriteLine($"Error al crear Centro de Costos: {e.Message}");
         }
     }
 }

@@ -3,11 +3,13 @@
 @using System.Text
 @using System.Text.Json
 @using Data.Trabajador;
+@using ProjMetodologia.Data.CentroCosto
 
 @page "/CentroCostos"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-@inject CentroCostos CentroCostosShared
+@inject SharedCentroCostos sharedCentroCostos
+@inject SharedStateService SharedState
 
 
 <h3>Centro de costos</h3>
@@ -48,6 +50,8 @@ else
 
 @code {
     private List<CentroCostos> centroCostos = new List<CentroCostos>();
+    private CentroCostos centroCosto;
+    private ResponseCentroCostos[] apiResponse;
 
     private async Task GetCentroCostosData()
     {
@@ -59,7 +63,7 @@ else
         }
         catch (HttpRequestException e)
         {
-            Console.WriteLine($"Error al obtener datos del usuario: {e.Message}");
+            Console.WriteLine($"Error al obtener datos del centro de costos: {e.Message}");
         }
     }
 
@@ -68,16 +72,33 @@ else
         await GetCentroCostosData();
     }
 
-    private CentroCostos centroCostosToEdit;
-
-    private void EditCentroCostos(CentroCostos centroCostos)
+    private void EditCentroCostos(CentroCostos centroCostosU)
     {
-        centroCostosToEdit = centroCostos;
+        sharedCentroCostos.SetValue(centroCostosU);
+        NavigationManager.NavigateTo("/UpdateCentroCostos");
     }
 
-    private void DeleteCentroCostos(CentroCostos centroCostos)
+    private async Task DeleteCentroCostos(CentroCostos centroCostosD)
     {
-        
+        var apiName = $"api/Varios/CentroCostosDelete?codigocentrocostos={centroCostosD.Codigo}&descripcioncentrocostos={centroCostosD.NombreCentroCostos}";
+
+        try
+        {
+            apiResponse = await Http.GetFromJsonAsync<ResponseCentroCostos[]>(apiName);
+
+            if (apiResponse != null && apiResponse[0].NombreCentroCostos.Equals("Eliminación Exitosa"))
+            {
+                NavigationManager.NavigateTo("/CentroCostos");
+            }
+            else
+            {
+                
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al eliminar Centro de Costos: {e.Message}");
+        }
     }
 
     private void CreateCentroCostos()

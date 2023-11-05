@@ -1,4 +1,4 @@
-﻿namespace ProjMetodologia.Data
+﻿namespace ProjMetodologia.Data.CentroCosto
 {
     public class CentroCostos
     {
