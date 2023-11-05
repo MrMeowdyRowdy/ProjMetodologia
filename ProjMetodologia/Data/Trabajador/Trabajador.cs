@@ -1,4 +1,4 @@
-﻿namespace ProjMetodologia.Data
+﻿namespace ProjMetodologia.Data.Trabajador
 {
     public class Trabajador
     {

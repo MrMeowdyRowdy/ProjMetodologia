@@ -1,0 +1,59 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+@using Data.Trabajador;
+
+@page "/OcupacionesTrabajador"
+@inject HttpClient Http
+
+
+<h3>Ocupaciones</h3>
+
+@if (ocupacionesTrabajador != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="white-text">Codigo</th>
+                <th class="white-text">Descripcion</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var atributo in ocupacionesTrabajador)
+            {
+                <tr>
+                    <td class="white-text">@atributo.Codigo</td>
+                    <td class="white-text">@atributo.Descripcion</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private List<AtributoTrabajador> ocupacionesTrabajador = new List<AtributoTrabajador>();
+
+    private async Task GetTrabajadorData()
+    {
+        var apiName = $"api/Varios/Ocupaciones";
+
+        try
+        {
+            ocupacionesTrabajador = await Http.GetFromJsonAsync<List<AtributoTrabajador>>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del usuario: {e.Message}");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTrabajadorData();
+    }
+}
