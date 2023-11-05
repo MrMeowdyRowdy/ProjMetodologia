@@ -1,0 +1,50 @@
+﻿@using ProjMetodologia.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@page "/CreateCentroCostos"
+@inject HttpClient Http
+
+<h3>Agregar centro de costos</h3>
+
+<form @onsubmit="CreateCentroCostosData">
+    <div class="form-group">
+        <label for="codigo">Código:</label>
+        <input type="text" class="form-control" id="codigo" @bind="centroCostos.Codigo">
+    </div>
+    <div class="form-group">
+        <label for="nombre">Nombre de Centro de Costos:</label>
+        <input type="text" class="form-control" id="nombre" @bind="centroCostos.NombreCentroCostos">
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@code {
+    private CentroCostos centroCostos = new CentroCostos();
+    private CentroCostos[] apiResponse;
+
+
+    private async Task CreateCentroCostosData()
+    {
+        var apiName = $"api/Varios/CentroCostosInsert?codigocentrocostos={centroCostos.Codigo}&descripcioncentrocostos={centroCostos.NombreCentroCostos}";
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync(apiName, centroCostos);
+
+            if (apiResponse != null && apiResponse[0].Mensaje.Equals("Ingreso Exitoso"))
+            {
+                // You can handle the successful creation, such as redirection or showing a success message.
+            }
+            else
+            {
+                // Handle the case where the creation was not successful (e.g., display an error message).
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error while creating Centro de Costos: {e.Message}");
+            // Handle the error as needed.
+        }
+    }
+}
