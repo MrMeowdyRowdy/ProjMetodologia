@@ -20,7 +20,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="white-text">CodigoConcepto</th>
                 <th class="white-text">Concepto</th>
                 <th class="white-text">Prioridad</th>
                 <th class="white-text">TipoOperacion</th>
@@ -41,7 +40,7 @@
             @foreach (var movimiento in movimientosPlanilla)
             {
                 <tr>
-                    <td class="white-text">@movimiento.CodigoConcepto</td>
+
                     <td class="white-text">@movimiento.Concepto</td>
                     <td class="white-text">@movimiento.Prioridad</td>
                     <td class="white-text">@movimiento.TipoOperacion</td>
@@ -97,7 +96,7 @@ else
     private void EditMovimientoPlanilla(MovimientoPlanilla movimientoPlanillaU)
     {
         sharedMovimientoPlanilla.SetValue(movimientoPlanillaU);
-        NavigationManager.NavigateTo("/UpdateMovimientoPlanilla");
+        NavigationManager.NavigateTo("/CreateMovimientoPlanilla");
     }
 
     private async Task DeleteMovimientoPlanilla(MovimientoPlanilla movimientoPlanillaD)
@@ -126,5 +125,6 @@ else
     private void CreateMovimientoPlanilla()
     {
         NavigationManager.NavigateTo("/CreateMovimientoPlanilla");
+        sharedMovimientoPlanilla.SetValue(null);
     }
 }
