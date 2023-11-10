@@ -13,16 +13,17 @@
 
 @if (centroCostos != null)
 {
-    <form @onsubmit="UpdateCentroCostosData">
-        <div class="form-group">
+    <form>
+        <div class="create-form">
             <label for="codigo">Código:</label>
             <input type="text" class="form-control" id="codigo" @bind="centroCostos.Codigo">
         </div>
-        <div class="form-group">
+        <div class="create-form">
             <label for="nombre">Nombre de Centro de Costos:</label>
             <input type="text" class="form-control" id="nombre" @bind="centroCostos.NombreCentroCostos">
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button @onsubmit="UpdateCentroCostosData" type="submit" class="btn submit-btn">Update</button>
+        <button @onclick="LimpiarCampos" class="btn submit-btn">Cancelar</button>
     </form>
 }
 else
@@ -59,7 +60,7 @@ else
             }
             else
             {
-                
+
             }
         }
         // catch (System.Text.Json.JsonException j)
@@ -70,5 +71,10 @@ else
         {
             Console.WriteLine($"Error al actualizar Centro de Costos: {e.Message}");
         }
+    }
+    private void LimpiarCampos()
+    {
+        centroCostos.Codigo = 0;
+        centroCostos.NombreCentroCostos = string.Empty;
     }
 }

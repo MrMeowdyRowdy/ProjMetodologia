@@ -13,9 +13,10 @@
     font-weight: 700;
 }
 
-.white-text {
+ div.white-text {
     color: white;
 }
+
 
 /* Colors */
 :root {
@@ -120,6 +121,18 @@ li {
 .submit-btn {
     margin-top: 1rem;
     font-size: 1.6rem;
+
+}
+.submit-btn-creates {
+    padding: 1rem 2rem;
+    margin-top: 1rem;
+    font-size: 1.6rem;
+    display: block; /* Hace que el botón ocupe todo el ancho disponible */
+    width: 100%;
+}
+
+.custom-table {
+    margin-top: 1rem; /* Agrega el margen superior según tus preferencias */
 }
 
 /* sign-up card */
@@ -146,6 +159,61 @@ li {
         padding-left: 1rem;
     }
 
+
+.create-form {
+    position: relative;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+    .create-form select {
+        padding: 1.5rem 2rem;
+        border: 0.1rem solid var(--grey);
+        border-radius: 0.7rem;
+        font-size: 1.6rem;
+    }
+
+        .create-form select:focus {
+            outline: 0.2rem dotted var(--dark-slate-grey);
+        }
+
+    .create-form label {
+        font-weight: 700;
+        font-size: 1.6rem;
+    }
+
+    .create-form input {
+        padding: 1.5rem 2rem;
+        border: 0.1rem solid var(--grey);
+        border-radius: 0.7rem;
+        font-size: 1.6rem;
+    }
+
+        .create-form input:focus {
+            outline: 0.2rem dotted var(--dark-slate-grey);
+        }
+
+    .create-form .error-message {
+        color: var(--tomato);
+        font-weight: 700;
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: none;
+    }
+
+    .create-form.error input {
+        background-color: var(--tomato-light);
+        border-color: var(--tomato);
+        color: var(--tomato);
+    }
+
+    .create-form.error .error-message {
+        display: block;
+    }
+
+
 .sign-up-form {
     position: relative;
     margin-top: 1rem;
@@ -159,6 +227,7 @@ li {
         border-radius: 0.7rem;
         font-size: 1.6rem;
     }
+
 
         .sign-up-form select:focus {
             outline: 0.2rem dotted var(--dark-slate-grey);
@@ -275,7 +344,9 @@ hr {
 
 .container {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px; /* Reduce el espacio entre los elementos */
 }
 
 
@@ -383,4 +454,45 @@ hr {
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
+}
+
+table{
+    background-color:white;
+    text-align:left;
+    border-collapse:collapse;
+    width:100%;
+}
+
+th, td {
+    color: white;
+    padding: 20px;
+}
+
+thead {
+    background-color: hsl(4, 100%, 67%);
+    border-bottom:solid 5px #ff3e8355;
+    color: white;
+}
+
+tr:nth-child(even){
+    background-color:hsl(231, 7%, 60%);
+}
+
+.button-plus {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 20px;
+    background: linear-gradient( 90deg, var(--gradient-pink), var(--gradient-orange) );
+    box-shadow: 0 1rem 1.5rem var(--gradient-shadow);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+}
+
+h3 {
+    font-size: 4rem;
+    text-align: center; /* Agrega esta línea para centrar el texto */
 }

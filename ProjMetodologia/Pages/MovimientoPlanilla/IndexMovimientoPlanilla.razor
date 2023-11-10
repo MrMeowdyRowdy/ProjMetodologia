@@ -13,27 +13,27 @@
 
 <h3>Movimiento planilla</h3>
 
-<button class="btn btn-success" @onclick="CreateMovimientoPlanilla">Create</button>
+<button class="btn submit-btn-creates" @onclick="CreateMovimientoPlanilla">Create</button>
 
 @if (movimientosPlanilla != null)
 {
-    <table class="table">
+    <table class="table custom-table">
         <thead>
             <tr>
-                <th class="white-text">Concepto</th>
-                <th class="white-text">Prioridad</th>
-                <th class="white-text">TipoOperacion</th>
-                <th class="white-text">Cuenta1</th>
-                <th class="white-text">Cuenta2</th>
-                <th class="white-text">Cuenta3</th>
-                <th class="white-text">Cuenta4</th>
-                <th class="white-text">MovimientoExcepcion1</th>
-                <th class="white-text">MovimientoExcepcion2</th>
-                <th class="white-text">MovimientoExcepcion3</th>
-                <th class="white-text">Aplica_iess</th>
-                <th class="white-text">Aplica_imp_renta</th>
-                <th class="white-text">Empresa_Afecta_Iess</th>
-                <th class="white-text">Mensaje</th>
+                <th">Concepto</th>
+                <th">Prioridad</th>
+                <th">TipoOperacion</th>
+                <th">Cuenta1</th>
+                <th">Cuenta2</th>
+                <th">Cuenta3</th>
+                <th">Cuenta4</th>
+                <th">MovimientoExcepcion1</th>
+                <th">MovimientoExcepcion2</th>
+                <th">MovimientoExcepcion3</th>
+                <th">Aplica_iess</th>
+                <th">Aplica_imp_renta</th>
+                <th">Empresa_Afecta_Iess</th>
+                <th">Mensaje</th>
             </tr>
         </thead>
         <tbody>
@@ -41,20 +41,20 @@
             {
                 <tr>
 
-                    <td class="white-text">@movimiento.Concepto</td>
-                    <td class="white-text">@movimiento.Prioridad</td>
-                    <td class="white-text">@movimiento.TipoOperacion</td>
-                    <td class="white-text">@movimiento.Cuenta1</td>
-                    <td class="white-text">@movimiento.Cuenta2</td>
-                    <td class="white-text">@movimiento.Cuenta3</td>
-                    <td class="white-text">@movimiento.Cuenta4</td>
-                    <td class="white-text">@movimiento.MovimientoExcepcion1</td>
-                    <td class="white-text">@movimiento.MovimientoExcepcion2</td>
-                    <td class="white-text">@movimiento.MovimientoExcepcion3</td>
-                    <td class="white-text">@movimiento.Aplica_iess</td>
-                    <td class="white-text">@movimiento.Aplica_imp_renta</td>
-                    <td class="white-text">@movimiento.Empresa_Afecta_Iess</td>
-                    <td class="white-text">@movimiento.Mensaje</td>
+                    <td">@movimiento.Concepto</td>
+                    <td">@movimiento.Prioridad</td>
+                    <td">@movimiento.TipoOperacion</td>
+                    <td">@movimiento.Cuenta1</td>
+                    <td">@movimiento.Cuenta2</td>
+                    <td">@movimiento.Cuenta3</td>
+                    <td">@movimiento.Cuenta4</td>
+                    <td">@movimiento.MovimientoExcepcion1</td>
+                    <td">@movimiento.MovimientoExcepcion2</td>
+                    <td">@movimiento.MovimientoExcepcion3</td>
+                    <td">@movimiento.Aplica_iess</td>
+                    <td">@movimiento.Aplica_imp_renta</td>
+                    <td">@movimiento.Empresa_Afecta_Iess</td>
+                    <td">@movimiento.Mensaje</td>
                     <td>
                         <button class="btn btn-primary" @onclick="() => EditMovimientoPlanilla(movimiento)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => DeleteMovimientoPlanilla(movimiento)">Delete</button>
@@ -74,7 +74,7 @@ else
     private MovimientoPlanilla movimientoPlanilla;
     private ResponseMovimientoPlanilla[] apiResponse;
 
-    private async Task GetCentroCostosData()
+    public async Task GetCentroCostosData()
     {
         var apiName = $"api/Varios/MovimientoPlanillaSelect";
 
@@ -122,7 +122,7 @@ else
         }
     }
 
-    private void CreateMovimientoPlanilla()
+    public void CreateMovimientoPlanilla()
     {
         NavigationManager.NavigateTo("/CreateMovimientoPlanilla");
         sharedMovimientoPlanilla.SetValue(null);

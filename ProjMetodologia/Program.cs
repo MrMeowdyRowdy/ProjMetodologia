@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using ProjMetodologia.Data;
 using ProjMetodologia.Data.CentroCosto;
 using ProjMetodologia.Data.MovimientoPlanilla;
+using ProjMetodologia.Pages.CentroCostos;
+using ProjMetodologia.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,9 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<SharedStateService>();
 builder.Services.AddSingleton<SharedCentroCostos>();
 builder.Services.AddSingleton<SharedMovimientoPlanilla>();
+// En el método ConfigureServices de Program.cs
+builder.Services.AddScoped<ICreatePage, CreatePageImplementation>();
+
 
 builder.Services.AddScoped(sp =>
     new HttpClient

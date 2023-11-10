@@ -13,26 +13,26 @@
 
 <h3>Centro de costos</h3>
 
-<button class="btn btn-success" @onclick="CreateCentroCostos">Create</button>
+<button class="btn submit-btn-creates" @onclick="CreateCentroCostos">Create</button>
 
 @if (centroCostos != null)
 {
-    <table class="table">
+    <table class="table custom-table">
         <thead>
             <tr>
-                <th class="white-text">Codigo</th>
-                <th class="white-text">Descripcion</th>
-                <th class="white-text">Mensaje</th>
-                <th class="white-text"></th>
+                <th>Codigo</th>
+                <th>Descripcion</th>
+                <th>Mensaje</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var atributo in centroCostos)
             {
                 <tr>
-                    <td class="white-text">@atributo.Codigo</td>
-                    <td class="white-text">@atributo.NombreCentroCostos</td>
-                    <td class="white-text">@atributo.Mensaje</td>
+                    <td>@atributo.Codigo</td>
+                    <td>@atributo.NombreCentroCostos</td>
+                    <td>@atributo.Mensaje</td>
                     <td>
                         <button class="btn btn-primary" @onclick="() => EditCentroCostos(atributo)">Edit</button>
                         <button class="btn btn-danger" @onclick="() => DeleteCentroCostos(atributo)">Delete</button>
@@ -52,7 +52,7 @@ else
     private CentroCostos centroCosto;
     private ResponseCentroCostos[] apiResponse;
 
-    private async Task GetCentroCostosData()
+    public async Task GetCentroCostosData()
     {
         var apiName = $"api/Varios/CentroCostosSelect";
 
@@ -100,7 +100,7 @@ else
         }
     }
 
-    private void CreateCentroCostos()
+    public async Task CreateCentroCostos()
     {
         NavigationManager.NavigateTo("/CreateCentroCostos");
     }

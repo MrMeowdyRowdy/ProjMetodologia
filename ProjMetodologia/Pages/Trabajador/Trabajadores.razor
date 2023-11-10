@@ -16,26 +16,26 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="white-text">Nombres</th>
-                <th class="white-text">Apellidos</th>
-                <th class="white-text">Identificacion</th>
-                <th class="white-text">CarnetIESS</th>
-                <th class ="white-text"> Genero</th>
-                <th class="white-text">Nivel Salarial</th>
-                <th class="white-text">Fecha Ingreso</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Identificacion</th>
+                <th>CarnetIESS</th>
+                <th> Genero</th>
+                <th>Nivel Salarial</th>
+                <th>Fecha Ingreso</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in trabajadorApiE)
             {
                 <tr>
-                    <td class="white-text">@item.Nombres</td>
-                    <td class="white-text">@($"{item.Apellido_Paterno} {item.Apellido_Materno}")</td>
-                    <td class="white-text">@item.Identificacion</td>
-                    <td class="white-text">@item.CarnetIESS</td>
-                    <td class="white-text">@item.Genero</td>
-                    <td class="white-text">@item.Nivel_Salarial</td>
-                    <td class="white-text">@item.FechaIngreso.ToShortDateString()</td>
+                    <td>@item.Nombres</td>
+                    <td>@($"{item.Apellido_Paterno} {item.Apellido_Materno}")</td>
+                    <td>@item.Identificacion</td>
+                    <td>@item.CarnetIESS</td>
+                    <td>@item.Genero</td>
+                    <td>@item.Nivel_Salarial</td>
+                    <td>@item.FechaIngreso.ToShortDateString()</td>
                 </tr>
             }
         </tbody>
