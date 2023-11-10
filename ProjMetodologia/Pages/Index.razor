@@ -2,26 +2,94 @@
 
 <PageTitle>Index</PageTitle>
 
+<style>
+    
+</style>
+
 <h1>Bienvenido a nuestra aplicación</h1>
 
 <SurveyPrompt Title="Somos un equipo de estudiantes de la Universidad de las Américas apasionados por la creación de experiencias digitales excepcionales. Permítenos presentarte a nuestro talentoso equipo:" />
 
-<h2>Dennis Ocaña - UX Designer</h2>
-<p>Como UX Designer, Dennis se encarga de diseñar la interfaz de usuario para asegurarse de que tu experiencia con nuestra aplicación sea intuitiva y agradable.</p>
+<div class="cardContainer">
+    @foreach (var teamMember in teamMembers)
+    {
+        <div class="cardPerson">
+            <img class="cardPerson-image" src="@teamMember.GitHubImage" alt="@teamMember.Name" />
 
-<h2>Thyaria Vinitimilla - UX Writer</h2>
-<p>Thyaria desempeña el papel crucial de UX Writer, asegurándose de que cada palabra y mensaje en la aplicación contribuya a una experiencia coherente y efectiva.</p>
+            <div class="cardPerson-content">
+                <h4>@teamMember.Name - @teamMember.Role</h4>
+                @*
+            <p>@teamMember.Description</p>
+                *@
 
-<h2>Adrian Bedon - Fullstack Developer</h2>
-<p>Adrian es nuestro Fullstack Developer, encargado de llevar a cabo el desarrollo integral de la aplicación, desde el frontend hasta el backend, para brindarte una experiencia fluida y completa.</p>
+                <mat-chip-listbox>
+                    @foreach (var skill in GetSkills(teamMember.Skills))
+                    {
+                        <mat-chip class="chip">@skill.Name</mat-chip>
+                    }
+                </mat-chip-listbox>
+            </div>
+        </div>
+    }
+</div>
 
-<h2>Xavier Ramos - Backend Developer</h2>
-<p>Xavier se especializa en el desarrollo del backend de la aplicación, garantizando que los datos y la lógica detrás de escena funcionen de manera eficiente y segura.</p>
 
-<h2>Fabiana Lira - Frontend Developer</h2>
-<p>Fabiana es nuestra Frontend Developer, trabajando en la parte visual de la aplicación para ofrecerte una interfaz atractiva y fácil de usar.</p>
+@code {
+    private List<TeamMember> teamMembers;
 
-<p>Estamos emocionados de presentarte nuestra aplicación y esperamos que disfrutes de la experiencia que hemos creado con tanto esfuerzo y dedicación.</p>
+    protected override void OnInitialized()
+    {
+        teamMembers = new List<TeamMember>
+        {
+            new TeamMember
+            {
+                Name = "Dennis Ocaña",
+                Role = "UX Designer",
+                Description = "Como UX Designer, Dennis se encarga de diseñar la interfaz de usuario para asegurarse de que tu experiencia con nuestra aplicación sea intuitiva y agradable.",
+                Skills = "Diseño de interfaz, Experiencia de usuario",
+                GitHubImage = "https://avatars.githubusercontent.com/u/116930589?v=4"
+            },
+            new TeamMember
+            {
+                Name = "Thyaria Vinitimilla",
+                Role = "UX Writer",
+                Description = "Thyaria desempeña el papel crucial de UX Writer, asegurándose de que cada palabra y mensaje en la aplicación contribuya a una experiencia coherente y efectiva.",
+                Skills = "Escritura, Comunicación",
+                GitHubImage = "https://avatars.githubusercontent.com/u/96449161?v=4"
+            },
+           new TeamMember
+            {
+                Name = "Adrian Bedon",
+                Role = "Fullstack Developer",
+                Description = "Adrian es nuestro Fullstack Developer, encargado de llevar a cabo el desarrollo integral de la aplicación, desde el frontend hasta el backend, para brindarte una experiencia fluida y completa.",
+                Skills = "Desarrollo Frontend, Desarrollo Backend",
+                GitHubImage = "https://avatars.githubusercontent.com/u/82057915?v=4"
+            },
+            new TeamMember
+            {
+                Name = "Xavier Ramos",
+                Role = "Backend Developer",
+                Description = "Xavier se especializa en el desarrollo del backend de la aplicación, garantizando que los datos y la lógica detrás de escena funcionen de manera eficiente y segura.",
+                Skills = "Desarrollo Backend, Seguridad",
+                GitHubImage = "https://avatars.githubusercontent.com/u/65315734?v=4"
+            },
+            new TeamMember
+            {
+                Name = "Fabiana Lira",
+                Role = "Frontend Developer",
+                Description = "Fabiana es nuestra Frontend Developer, trabajando en la parte visual de la aplicación para ofrecerte una interfaz atractiva y fácil de usar.",
+                Skills = "Desarrollo Frontend, Diseño UI",
+                GitHubImage = "https://media.licdn.com/dms/image/D4D03AQECIAX_rqzVng/profile-displayphoto-shrink_200_200/0/1674567478945?e=1704931200&v=beta&t=gB4iPfmysWlpJbdMrWBP1rePrF5mYUlO7ax6nOrdwdQ"
+            }
+        };
+    }
+
+    private List<Skill> GetSkills(string skills)
+    {
+        var skillNames = skills.Split(',');
+        return skillNames.Select(skill => new Skill { Name = skill.Trim() }).ToList();
+    }
+}
 
 @*
 <SurveyPrompt Title="How is Blazor working for you?" />
