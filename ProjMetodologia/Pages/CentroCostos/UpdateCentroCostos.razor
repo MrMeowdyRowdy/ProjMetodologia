@@ -23,7 +23,7 @@
             <input type="text" class="form-control" id="nombre" @bind="centroCostos.NombreCentroCostos">
         </div>
         <button @onsubmit="UpdateCentroCostosData" type="submit" class="btn submit-btn">Update</button>
-        <button @onclick="LimpiarCampos" class="btn submit-btn">Cancelar</button>
+        <button @onclick="GoBack" class="btn submit-btn">Cancelar</button>
     </form>
 }
 else
@@ -72,9 +72,8 @@ else
             Console.WriteLine($"Error al actualizar Centro de Costos: {e.Message}");
         }
     }
-    private void LimpiarCampos()
+    private void GoBack()
     {
-        centroCostos.Codigo = 0;
-        centroCostos.NombreCentroCostos = string.Empty;
+        NavigationManager.NavigateTo("/CentroCostos");
     }
 }

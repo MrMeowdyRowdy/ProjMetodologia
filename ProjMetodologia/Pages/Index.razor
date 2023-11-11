@@ -17,10 +17,8 @@
             <img class="cardPerson-image" src="@teamMember.GitHubImage" alt="@teamMember.Name" />
 
             <div class="cardPerson-content">
-                <h4>@teamMember.Name - @teamMember.Role</h4>
-                @*
-            <p>@teamMember.Description</p>
-                *@
+                <h4>@teamMember.Name</h4>
+                    <h4>@teamMember.Role</h4>
 
                 <mat-chip-listbox>
                     @foreach (var skill in GetSkills(teamMember.Skills))

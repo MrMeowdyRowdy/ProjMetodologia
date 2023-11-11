@@ -1,3 +1,4 @@
+@import url("https://fonts.cdnfonts.com/css/technoma");
 /* Fonts */
 /* 400 */
 @font-face {
@@ -491,7 +492,7 @@ table{
 }
 
 th, td {
-    color: white;
+    color: black;
     padding: 20px;
 }
 
@@ -502,7 +503,7 @@ thead {
 }
 
 tr:nth-child(even){
-    background-color:hsl(231, 7%, 60%);
+    
 }
 
 .button-plus {
@@ -522,4 +523,5 @@ tr:nth-child(even){
 h3 {
     font-size: 4rem;
     text-align: center; /* Agrega esta línea para centrar el texto */
+    font-family: 'Technoma', sans-serif;
 }
