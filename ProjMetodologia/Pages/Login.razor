@@ -42,13 +42,15 @@
                                     <div class="container; d-inline-block" style="display: flex; justify-content: center;">
                                         <button type="submit" @onclick="Validate" class="btn submit-btn">Continuar</button>
                                         <div class="popup" style="@(showPopup ? "display: block;" : "display: none;")">
-                                            <div class="popup-content">
-                                                <div class="card success-card">
-                                                    <img src="Images/icon-success.svg" alt="" />
-                                                    <h2>You have selected an incorrect emisor!</h2>
-                                                    <p>Please click Try again for a new chance.</p>
-                                                    <button @onclick="ClosePopup" class="btn dismiss-btn">Try again</button>
+                                            <div class="card success-card">
+                                                <div class="container">
+                                                    <img src="Images/icon-success.svg" alt="Error" />
+                                                    <h2>Error en el emisor</h2>
                                                 </div>
+                                                <p>Has seleccionado incorrectamente el emisor, te recomendamos hablar con tu administrador para confirmar el emisor que desear encontrar.
+                                                    <br> <br><strong>NOTA:</strong> Debes hacer click en Try again para intentar nuevamente.
+                                                </p>
+                                                <button @onclick="ClosePopup" class="btn dismiss-btn">Try again</button>
                                             </div>
                                         </div>
 

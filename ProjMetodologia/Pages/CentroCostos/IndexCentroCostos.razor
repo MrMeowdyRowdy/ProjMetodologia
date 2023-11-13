@@ -1,0 +1,107 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+@using Data.Trabajador;
+@using ProjMetodologia.Data.CentroCosto
+
+@page "/CentroCostos"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject SharedCentroCostos sharedCentroCostos
+
+
+<h3>Centro de costos</h3>
+
+<button class="btn submit-btn-creates" @onclick="CreateCentroCostos">Create</button>
+
+@if (centroCostos != null)
+{
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Descripcion</th>
+                <th>Mensaje</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var atributo in centroCostos)
+            {
+                <tr>
+                    <td>@atributo.Codigo</td>
+                    <td>@atributo.NombreCentroCostos</td>
+                    <td>@atributo.Mensaje</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditCentroCostos(atributo)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteCentroCostos(atributo)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private List<CentroCostos> centroCostos = new List<CentroCostos>();
+    private CentroCostos centroCosto;
+    private ResponseCentroCostos[] apiResponse;
+
+    public async Task GetCentroCostosData()
+    {
+        var apiName = $"api/Varios/CentroCostosSelect";
+
+        try
+        {
+            centroCostos = await Http.GetFromJsonAsync<List<CentroCostos>>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del centro de costos: {e.Message}");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCentroCostosData();
+    }
+
+    private void EditCentroCostos(CentroCostos centroCostosU)
+    {
+        sharedCentroCostos.SetValue(centroCostosU);
+        NavigationManager.NavigateTo("/UpdateCentroCostos");
+    }
+
+    private async Task DeleteCentroCostos(CentroCostos centroCostosD)
+    {
+        var apiName = $"api/Varios/CentroCostosDelete?codigocentrocostos={centroCostosD.Codigo}&descripcioncentrocostos={centroCostosD.NombreCentroCostos}";
+
+        try
+        {
+            apiResponse = await Http.GetFromJsonAsync<ResponseCentroCostos[]>(apiName);
+
+            if (apiResponse != null && apiResponse[0].NombreCentroCostos.Equals("Eliminación Exitosa"))
+            {
+                NavigationManager.NavigateTo("/CentroCostos");
+            }
+            else
+            {
+                
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al eliminar Centro de Costos: {e.Message}");
+        }
+    }
+
+    public async Task CreateCentroCostos()
+    {
+        NavigationManager.NavigateTo("/CreateCentroCostos");
+    }
+}

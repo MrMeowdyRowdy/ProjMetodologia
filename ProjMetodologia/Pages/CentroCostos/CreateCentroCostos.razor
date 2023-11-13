@@ -1,0 +1,73 @@
+﻿@using ProjMetodologia.Data
+@using ProjMetodologia.Data.CentroCosto
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@page "/CreateCentroCostos"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Agregar centro de costos</h3>
+<div>
+    <form onsubmit="return false;">
+        <div class="create-form">
+            <label for="codigo">Código:</label>
+            <input type="text" class="form-control" id="codigo" @bind="centroCostos.Codigo">
+        </div>
+        <div class="create-form">
+            <label for="nombre">Nombre de Centro de Costos:</label>
+            <input type="text" class="form-control" id="nombre" @bind="centroCostos.NombreCentroCostos">
+        </div>
+        <button @onsubmit="CreateCentroCostosData" type="submit" class="btn submit-btn">Crear</button>
+        <button @onclick="Goback" class="btn submit-btn">Cancelar</button>
+    </form>
+</div>
+
+
+@code {
+    private CentroCostos centroCostos = new CentroCostos();
+    private CentroCostos[] apiResponse;
+    @inject ICreatePage CreatePage
+
+    public async Task CreateCentroCostosData()
+    {
+        var apiName = $"api/Varios/CentroCostosInsert?codigocentrocostos={centroCostos.Codigo}&descripcioncentrocostos={centroCostos.NombreCentroCostos}";
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync(apiName, centroCostos);
+
+            if (response.IsSuccessStatusCode)
+            {
+                apiResponse = await response.Content.ReadFromJsonAsync<CentroCostos[]>();
+
+                if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("Ingreso Exitoso"))
+                {
+                    NavigationManager.NavigateTo("/CentroCostos");
+                }
+                else if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("El registro que desea ingresar ya existe"))
+                {
+                    
+                }
+            }
+            else
+            {
+                
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al crear Centro de Costos: {e.Message}");
+        }
+    }
+
+    private void Goback()
+    {
+        NavigationManager.NavigateTo("/CentroCostos");
+    }
+
+    private void Create()
+    {
+        //CreateCentroCostosData();
+    }
+}

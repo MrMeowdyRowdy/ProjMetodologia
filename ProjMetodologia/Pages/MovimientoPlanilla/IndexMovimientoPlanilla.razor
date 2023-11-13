@@ -1,0 +1,129 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+@using Data.Trabajador;
+@using ProjMetodologia.Data.MovimientoPlanilla
+
+@page "/MovimientoPlanilla"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject SharedMovimientoPlanilla sharedMovimientoPlanilla
+
+<h3>Movimiento Planilla</h3>
+
+<button class="btn submit-btn-creates" @onclick="CreateMovimientoPlanilla">Create</button>
+
+@if (movimientosPlanilla != null)
+{
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th">Concepto</th>
+                <th">Prioridad</th>
+                <th">TipoOperacion</th>
+                <th">Cuenta1</th>
+                <th">Cuenta2</th>
+                <th">Cuenta3</th>
+                <th">Cuenta4</th>
+                <th">MovimientoExcepcion1</th>
+                <th">MovimientoExcepcion2</th>
+                <th">MovimientoExcepcion3</th>
+                <th">Aplica_iess</th>
+                <th">Aplica_imp_renta</th>
+                <th">Empresa_Afecta_Iess</th>
+                <th">Mensaje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var movimiento in movimientosPlanilla)
+            {
+                <tr>
+
+                    <td">@movimiento.Concepto</td>
+                    <td">@movimiento.Prioridad</td>
+                    <td">@movimiento.TipoOperacion</td>
+                    <td">@movimiento.Cuenta1</td>
+                    <td">@movimiento.Cuenta2</td>
+                    <td">@movimiento.Cuenta3</td>
+                    <td">@movimiento.Cuenta4</td>
+                    <td">@movimiento.MovimientoExcepcion1</td>
+                    <td">@movimiento.MovimientoExcepcion2</td>
+                    <td">@movimiento.MovimientoExcepcion3</td>
+                    <td">@movimiento.Aplica_iess</td>
+                    <td">@movimiento.Aplica_imp_renta</td>
+                    <td">@movimiento.Empresa_Afecta_Iess</td>
+                    <td">@movimiento.Mensaje</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditMovimientoPlanilla(movimiento)">Edit</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteMovimientoPlanilla(movimiento)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private List<MovimientoPlanilla> movimientosPlanilla = new List<MovimientoPlanilla>();
+    private MovimientoPlanilla movimientoPlanilla;
+    private ResponseMovimientoPlanilla[] apiResponse;
+
+    public async Task GetCentroCostosData()
+    {
+        var apiName = $"api/Varios/MovimientoPlanillaSelect";
+
+        try
+        {
+            movimientosPlanilla = await Http.GetFromJsonAsync<List<MovimientoPlanilla>>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos de movimientos de planilla: {e.Message}");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCentroCostosData();
+    }
+
+    private void EditMovimientoPlanilla(MovimientoPlanilla movimientoPlanillaU)
+    {
+        sharedMovimientoPlanilla.SetValue(movimientoPlanillaU);
+        NavigationManager.NavigateTo("/CreateMovimientoPlanilla");
+    }
+
+    private async Task DeleteMovimientoPlanilla(MovimientoPlanilla movimientoPlanillaD)
+    {
+        var apiName = $"api/Varios/MovimeintoPlanillaDelete?codigomovimiento={movimientoPlanillaD.CodigoConcepto}&descripcionomovimiento={movimientoPlanillaD.Concepto}";
+
+        try
+        {
+            apiResponse = await Http.GetFromJsonAsync<ResponseMovimientoPlanilla[]>(apiName);
+
+            if (apiResponse != null && apiResponse[0].Concepto.Equals("Eliminación Exitosa"))
+            {
+                NavigationManager.NavigateTo("/MovimientoPlanilla");
+            }
+            else
+            {
+
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al eliminar Centro de Costos: {e.Message}");
+        }
+    }
+
+    public void CreateMovimientoPlanilla()
+    {
+        NavigationManager.NavigateTo("/CreateMovimientoPlanilla");
+        sharedMovimientoPlanilla.SetValue(null);
+    }
+}

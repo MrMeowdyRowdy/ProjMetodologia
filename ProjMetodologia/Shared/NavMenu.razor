@@ -1,34 +1,145 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">ProjMetodologia</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
+﻿<div class="navbar" style="position: absolute; z-index: 1000;">
+    <button @onclick="ToggleNavMenu" class="navbar-toggler">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="@NavMenuCssClass" style="position: relative;">
+            <nav class="navbar-nav; flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                    <span class="oi oi-home" aria-hidden="true"></span> <strong>Logout</strong>
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ListaTrabajador">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Lista de Trabajadores
-            </NavLink>
+             <NavLink class="nav-link" href="Index">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> <strong>Home</strong>
+             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=>expandSubMenu = !expandSubMenu">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> <strong>Manejo de personal</strong>
+            </NavLink>
+            @if (expandSubMenu)
+            {
+                <div class="nav flex-column">
+                    <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="CentroCostos">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Centro de costos
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="MovimientoPlanilla">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Movimientos planilla
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="MovimientoPlanilla">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Gestion cuenta nomina
+                        </NavLink>
+                    </div>
+                </div>   
+            }
+        </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" @onclick="()=>expandSubMenu1 = !expandSubMenu1">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> <strong>Manejo trabajadores</strong>
+                </NavLink>
+                @if (expandSubMenu1)
+                {
+                    <div class="nav flex-column">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="ListaTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Lista de Trabajadores
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="TipoTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Tipo
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="GeneroTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Genero
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="VacacionesTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Periodo de vacaciones
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="ComisionTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Tipo comisión
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="DecimoTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Decimo tercero, cuarto
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="ReservaTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Fondo reserva
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="ContratoTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Tipo contrato
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="CeseTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Tipo cese
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="EstadoCivilTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Estado civil
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="ReingresoTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Reingreso
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="TipoCuentaTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Tipo cuenta
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="OcupacionesTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Ocupaciones
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="CategoriaOcupacionalTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Categoría ocupacional
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="NivelSalarialTrabajador">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Nivel salarial
+                            </NavLink>
+                        </div>
+                    </div>
+                }
+            </div>
     </nav>
+</div>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
-
+    private bool expandSubMenu;
+    private bool expandSubMenu1;
+ 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
+    
     private void ToggleNavMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        if (!expandSubMenu && !expandSubMenu1)
+        {
+            collapseNavMenu = !collapseNavMenu;
+        }
     }
 }
