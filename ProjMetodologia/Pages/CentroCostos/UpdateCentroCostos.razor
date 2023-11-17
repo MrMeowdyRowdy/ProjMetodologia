@@ -13,8 +13,8 @@
 
 @if (centroCostos != null)
 {
-    <form>
-        <div class="create-form">
+    <form @onsubmit="UpdateCentroCostosData">
+        <div class="create-form">ss
             <label for="codigo">Código:</label>
             <input type="text" class="form-control" id="codigo" @bind="centroCostos.Codigo">
         </div>
@@ -22,7 +22,7 @@
             <label for="nombre">Nombre de Centro de Costos:</label>
             <input type="text" class="form-control" id="nombre" @bind="centroCostos.NombreCentroCostos">
         </div>
-        <button @onsubmit="UpdateCentroCostosData" type="submit" class="btn submit-btn">Update</button>
+        <button type="submit" class="btn submit-btn">Update</button>
         <button @onclick="GoBack" class="btn submit-btn">Cancelar</button>
     </form>
 }

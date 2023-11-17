@@ -10,109 +10,111 @@
 
 <h3>Agregar Movimientos de plantilla</h3>
 
-<form onsubmit="@(async () => { await GetQuestions(); })">
-    @if (currentSection == 1)
-    {
-        <div class="row">
-            <div class="col-md-6">
-                <div class="create-form">
-                    <label for="Concepto">Concepto:</label>
-                    <input type="text" id="Concepto" class="form-control" @bind="movimientoPlanilla.Concepto" />
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="create-form">
-                    <label for="Prioridad">Prioridad:</label>
-                    <input type="number" id="Prioridad" class="form-control" @bind="movimientoPlanilla.Prioridad" />
-                </div>
-            </div>
-        </div>
-        <div class="create-form">
-            <label for="TipoOperacion">Tipo de Operacion:</label>
-            <select @bind="selectedTO" class="form-control">
-                <option value="">Seleccione el Tipo de Operación</option>
-                @foreach (var To in apiTO)
-                {
-                    <option value="@To.CodigoTipooperacion">@To.NombreOperacion</option>
-                }
-            </select>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="create-form">
-                    <label for="Cuenta1">Cuenta 1:</label>
-                    <input type="text" id="Cuenta1" class="form-control" @bind="movimientoPlanilla.Cuenta1" />
-                </div>
-                <div class="create-form">
-                    <label for="Cuenta2">Cuenta 2:</label>
-                    <input type="text" id="Cuenta2" class="form-control" @bind="movimientoPlanilla.Cuenta2" />
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="create-form">
-                    <label for="Cuenta3">Cuenta 3:</label>
-                    <input type="text" id="Cuenta3" class="form-control" @bind="movimientoPlanilla.Cuenta3" />
-                </div>
-                <div class="create-form">
-                    <label for="Cuenta4">Cuenta 4:</label>
-                    <input type="text" id="Cuenta4" class="form-control" @bind="movimientoPlanilla.Cuenta4" />
-                </div>
-            </div>
-        </div>
-        <button type="button" class="btn submit-btn" @onclick="NextSection">Siguiente</button>
-        <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
-    }
-    @if (currentSection == 2)
-    {
-        <div class="row">
-            <div class="col-md-6">
-                <div class="create-form">
-                    <label for="MovimientoExcepcion1">Movimiento Excepcion 1:</label>
-                    <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion1" />
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="create-form">
-                    <label for="MovimientoExcepcion2">Movimiento Excepcion 2:</label>
-                    <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion2" />
-                </div>
-            </div>
-        </div>
-        <div class="create-form">
-            <label for="MovimientoExcepcion3">Movimiento Excepcion 3:</label>
-            <select @bind="selectedME3" class="form-control">
-                <option value="">Seleccione la Excepción</option>
-                @foreach (var Me in apiME)
-                {
-                    <option value="@Me.DesripMovimientoExce">@Me.CodigoMovimientoExce</option>
-                }
-            </select>
-        </div>
-        <div class="create-form">
-            <label for="Aplica_iess">Aplica iess:</label>
-            <input type="text" id="Aplica_iess" class="form-control" @bind="movimientoPlanilla.Aplica_iess" />
-        </div>
-        <div class="create-form">
-            <label for="Aplica_imp_renta">Aplica impuesto a la renta:</label>
-            <input type="text" id="Aplica_imp_renta" class="form-control" @bind="movimientoPlanilla.Aplica_imp_renta" />
-        </div>
-        <div class="create-form">
-            <label for="Empresa_Afecta_Iess">Empresa Afecta al Iess:</label>
-            <input type="text" id="Empresa_Afecta_Iess" class="form-control" @bind="movimientoPlanilla.Empresa_Afecta_Iess" />
-        </div>
-        @if (sharedMovimientoPlanilla.Value != null)
+<form @onsubmit="UpdateMovimientoPlanillaData" >
+   <form @onsubmit="@(async () => { await GetQuestions(); })">>
+        @if (currentSection == 1)
         {
-            <button type="submit" class="btn submit-btn" @onclick=UpdateMovimientoPlanillaData>Editar</button>
-            <button type="button" class="btn submit-btn" @onclick="GoBackForm">Regresar</button>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="create-form">
+                        <label for="Concepto">Concepto:</label>
+                        <input type="text" id="Concepto" class="form-control" @bind="movimientoPlanilla.Concepto" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="create-form">
+                        <label for="Prioridad">Prioridad:</label>
+                        <input type="number" id="Prioridad" class="form-control" @bind="movimientoPlanilla.Prioridad" />
+                    </div>
+                </div>
+            </div>
+            <div class="create-form">
+                <label for="TipoOperacion">Tipo de Operacion:</label>
+                <select @bind="selectedTO" class="form-control">
+                    <option value="">Seleccione el Tipo de Operación</option>
+                    @foreach (var To in apiTO)
+                    {
+                            <option value="@To.CodigoTipooperacion">@To.NombreOperacion</option>
+                    }
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="create-form">
+                        <label for="Cuenta1">Cuenta 1:</label>
+                        <input type="text" id="Cuenta1" class="form-control" @bind="movimientoPlanilla.Cuenta1" />
+                    </div>
+                    <div class="create-form">
+                        <label for="Cuenta2">Cuenta 2:</label>
+                        <input type="text" id="Cuenta2" class="form-control" @bind="movimientoPlanilla.Cuenta2" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="create-form">
+                        <label for="Cuenta3">Cuenta 3:</label>
+                        <input type="text" id="Cuenta3" class="form-control" @bind="movimientoPlanilla.Cuenta3" />
+                    </div>
+                    <div class="create-form">
+                        <label for="Cuenta4">Cuenta 4:</label>
+                        <input type="text" id="Cuenta4" class="form-control" @bind="movimientoPlanilla.Cuenta4" />
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn submit-btn" @onclick="NextSection">Siguiente</button>
             <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
         }
-        else
+        @if (currentSection == 2)
         {
-            <button type="submit" class="btn submit-btn" @onclick=CreateMovimientoPlanillaData>Crear</button>
-            <button type="button" class="btn submit-btn" @onclick="GoBackForm">Regresar</button>
-            <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="create-form">
+                        <label for="MovimientoExcepcion1">Movimiento Excepcion 1:</label>
+                        <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion1" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="create-form">
+                        <label for="MovimientoExcepcion2">Movimiento Excepcion 2:</label>
+                        <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion2" />
+                    </div>
+                </div>
+            </div>
+            <div class="create-form">
+                <label for="MovimientoExcepcion3">Movimiento Excepcion 3:</label>
+                <select @bind="selectedME3" class="form-control">
+                    <option value="">Seleccione la Excepción</option>
+                    @foreach (var Me in apiME)
+                    {
+                            <option value="@Me.DesripMovimientoExce">@Me.CodigoMovimientoExce</option>
+                    }
+                </select>
+            </div>
+            <div class="create-form">
+                <label for="Aplica_iess">Aplica iess:</label>
+                <input type="text" id="Aplica_iess" class="form-control" @bind="movimientoPlanilla.Aplica_iess" />
+            </div>
+            <div class="create-form">
+                <label for="Aplica_imp_renta">Aplica impuesto a la renta:</label>
+                <input type="text" id="Aplica_imp_renta" class="form-control" @bind="movimientoPlanilla.Aplica_imp_renta" />
+            </div>
+            <div class="create-form">
+                <label for="Empresa_Afecta_Iess">Empresa Afecta al Iess:</label>
+                <input type="text" id="Empresa_Afecta_Iess" class="form-control" @bind="movimientoPlanilla.Empresa_Afecta_Iess" />
+            </div>
+            @if (sharedMovimientoPlanilla.Value != null)
+            {
+                    <button type="submit" class="btn submit-btn" @onclick=UpdateMovimientoPlanillaData>Editar</button>
+                    <button type="button" class="btn submit-btn" @onclick="GoBackForm">Regresar</button>
+                    <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
+            }
+            else
+            {
+                    <button type="submit" class="btn submit-btn" @onclick=CreateMovimientoPlanillaData>Crear</button>
+                    <button type="button" class="btn submit-btn" @onclick="GoBackForm">Regresar</button>
+                    <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
+            }
         }
-    }
+   </form> 
 </form>
 
 @code {
