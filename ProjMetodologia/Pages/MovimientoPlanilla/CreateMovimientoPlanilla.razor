@@ -8,156 +8,90 @@
 @inject NavigationManager NavigationManager
 @inject SharedMovimientoPlanilla sharedMovimientoPlanilla
 
-<h3>Agregar Movimientos de plantilla</h3>
+<h3>Agregar centro de costos</h3>
 
-<form @onsubmit="UpdateMovimientoPlanillaData" >
-   <form @onsubmit="@(async () => { await GetQuestions(); })">>
-        @if (currentSection == 1)
-        {
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="create-form">
-                        <label for="Concepto">Concepto:</label>
-                        <input type="text" id="Concepto" class="form-control" @bind="movimientoPlanilla.Concepto" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="create-form">
-                        <label for="Prioridad">Prioridad:</label>
-                        <input type="number" id="Prioridad" class="form-control" @bind="movimientoPlanilla.Prioridad" />
-                    </div>
-                </div>
-            </div>
-            <div class="create-form">
-                <label for="TipoOperacion">Tipo de Operacion:</label>
-                <select @bind="selectedTO" class="form-control">
-                    <option value="">Seleccione el Tipo de Operación</option>
-                    @foreach (var To in apiTO)
-                    {
-                            <option value="@To.CodigoTipooperacion">@To.NombreOperacion</option>
-                    }
-                </select>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="create-form">
-                        <label for="Cuenta1">Cuenta 1:</label>
-                        <input type="text" id="Cuenta1" class="form-control" @bind="movimientoPlanilla.Cuenta1" />
-                    </div>
-                    <div class="create-form">
-                        <label for="Cuenta2">Cuenta 2:</label>
-                        <input type="text" id="Cuenta2" class="form-control" @bind="movimientoPlanilla.Cuenta2" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="create-form">
-                        <label for="Cuenta3">Cuenta 3:</label>
-                        <input type="text" id="Cuenta3" class="form-control" @bind="movimientoPlanilla.Cuenta3" />
-                    </div>
-                    <div class="create-form">
-                        <label for="Cuenta4">Cuenta 4:</label>
-                        <input type="text" id="Cuenta4" class="form-control" @bind="movimientoPlanilla.Cuenta4" />
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="btn submit-btn" @onclick="NextSection">Siguiente</button>
-            <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
-        }
-        @if (currentSection == 2)
-        {
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="create-form">
-                        <label for="MovimientoExcepcion1">Movimiento Excepcion 1:</label>
-                        <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion1" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="create-form">
-                        <label for="MovimientoExcepcion2">Movimiento Excepcion 2:</label>
-                        <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion2" />
-                    </div>
-                </div>
-            </div>
-            <div class="create-form">
-                <label for="MovimientoExcepcion3">Movimiento Excepcion 3:</label>
-                <select @bind="selectedME3" class="form-control">
-                    <option value="">Seleccione la Excepción</option>
-                    @foreach (var Me in apiME)
-                    {
-                            <option value="@Me.DesripMovimientoExce">@Me.CodigoMovimientoExce</option>
-                    }
-                </select>
-            </div>
-            <div class="create-form">
-                <label for="Aplica_iess">Aplica iess:</label>
-                <input type="text" id="Aplica_iess" class="form-control" @bind="movimientoPlanilla.Aplica_iess" />
-            </div>
-            <div class="create-form">
-                <label for="Aplica_imp_renta">Aplica impuesto a la renta:</label>
-                <input type="text" id="Aplica_imp_renta" class="form-control" @bind="movimientoPlanilla.Aplica_imp_renta" />
-            </div>
-            <div class="create-form">
-                <label for="Empresa_Afecta_Iess">Empresa Afecta al Iess:</label>
-                <input type="text" id="Empresa_Afecta_Iess" class="form-control" @bind="movimientoPlanilla.Empresa_Afecta_Iess" />
-            </div>
-            @if (sharedMovimientoPlanilla.Value != null)
+<form>
+    <div class="form-group">
+        <label for="Concepto">Concepto:</label>
+        <input type="text" id="Concepto" class="form-control" @bind="movimientoPlanilla.Concepto" />
+    </div>
+    <div class="form-group">
+        <label for="Prioridad">Prioridad:</label>
+        <input type="number" id="Prioridad" class="form-control" @bind="movimientoPlanilla.Prioridad" />
+    </div>
+    <div class="form-group">
+        <label for="TipoOperacion">Tipo de Operacion:</label>
+        <select @bind="selectedTO" class="form-control">
+            <option value="">Seleccione el Tipo de Operación</option>
+            @foreach (var To in apiTO)
             {
-                    <button type="submit" class="btn submit-btn" @onclick=UpdateMovimientoPlanillaData>Editar</button>
-                    <button type="button" class="btn submit-btn" @onclick="GoBackForm">Regresar</button>
-                    <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
+                <option value="@To.CodigoTipooperacion">@To.NombreOperacion</option>
             }
-            else
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Cuenta1">Cuenta 1:</label>
+        <input type="text" id="Cuenta1" class="form-control" @bind="movimientoPlanilla.Cuenta1" />
+    </div>
+    <div class="form-group">
+        <label for="Cuenta2">Cuenta 2:</label>
+        <input type="text" id="Cuenta2" class="form-control" @bind="movimientoPlanilla.Cuenta2" />
+    </div>
+    <div class="form-group">
+        <label for="Cuenta3">Cuenta 3:</label>
+        <input type="text" id="Cuenta3" class="form-control" @bind="movimientoPlanilla.Cuenta3" />
+    </div>
+    <div class="form-group">
+        <label for="Cuenta4">Cuenta 4:</label>
+        <input type="text" id="Cuenta4" class="form-control" @bind="movimientoPlanilla.Cuenta4" />
+    </div>
+    <div class="form-group">
+        <label for="MovimientoExcepcion1">Movimiento Excepcion 1:</label>
+        <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion1" />
+    </div>
+    <div class="form-group">
+        <label for="MovimientoExcepcion2">Movimiento Excepcion 2:</label>
+        <input type="text" id="MovimientoExcepcion3" class="form-control" @bind="movimientoPlanilla.MovimientoExcepcion2" />
+    </div>
+    <div class="form-group">
+        <label for="MovimientoExcepcion3">Movimiento Excepcion 3:</label>
+        <select @bind="selectedME3" class="form-control">
+            <option value="">Seleccione la Excepción</option>
+            @foreach (var Me in apiME)
             {
-                    <button type="submit" class="btn submit-btn" @onclick=CreateMovimientoPlanillaData>Crear</button>
-                    <button type="button" class="btn submit-btn" @onclick="GoBackForm">Regresar</button>
-                    <button type="button" class="btn submit-btn" @onclick="GoBack">Cancelar</button>
+                <option value="@Me.DesripMovimientoExce">@Me.CodigoMovimientoExce</option>
             }
-        }
-   </form> 
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Aplica_iess">Aplica iess:</label>
+        <input type="text" id="Aplica_iess" class="form-control" @bind="movimientoPlanilla.Aplica_iess" />
+    </div>
+    <div class="form-group">
+        <label for="Aplica_imp_renta">Aplica impuesto a la renta:</label>
+        <input type="text" id="Aplica_imp_renta" class="form-control" @bind="movimientoPlanilla.Aplica_imp_renta" />
+    </div>
+    <div class="form-group">
+        <label for="Empresa_Afecta_Iess">Empresa Afecta al Iess:</label>
+        <input type="text" id="Empresa_Afecta_Iess" class="form-control" @bind="movimientoPlanilla.Empresa_Afecta_Iess" />
+    </div>
+    @if (sharedMovimientoPlanilla.Value != null)
+    {
+        <button type="submit" class="btn btn-primary" @onclick=UpdateMovimientoPlanillaData>Edit</button>
+    }
+    else
+    {
+        <button type="submit" class="btn btn-primary" @onclick=CreateMovimientoPlanillaData>Create</button>
+    }
+
 </form>
 
 @code {
     private MovimientoPlanilla movimientoPlanilla;
-    private MovimientoPlanilla backupMovimientoPlanilla;
     private int selectedTO;
     private string selectedME3;
     private List<TipoOperacion> apiTO = new List<TipoOperacion>();
     private List<MovimientoE3> apiME = new List<MovimientoE3>();
-    @inject ICreatePage CreatePage
-    private bool FullfilledSuccessful = false; 
-    private int currentSection = 1;
-    private int totalSections = 2;
-
-    private void GoBack()
-    {
-        NavigationManager.NavigateTo("/MovimientoPlanilla");
-    }
-
-    private void GoBackForm()
-    {
-        movimientoPlanilla = backupMovimientoPlanilla;
-        currentSection = 1; // Restaurar a la sección anterior
-    }
-
-    private void NextSection()
-    {
-        if (currentSection < totalSections)
-        {
-            // Almacena temporalmente los valores antes de pasar a la siguiente sección
-            backupMovimientoPlanilla = new MovimientoPlanilla
-                {
-                    Concepto = movimientoPlanilla.Concepto,
-                    Prioridad = movimientoPlanilla.Prioridad,
-                    TipoOperacion = movimientoPlanilla.TipoOperacion,
-                    Cuenta1 = movimientoPlanilla.Cuenta1,
-                    Cuenta2 = movimientoPlanilla.Cuenta2,
-                    Cuenta3 = movimientoPlanilla.Cuenta3,
-                    Cuenta4 = movimientoPlanilla.Cuenta4
-                };
-            currentSection++;
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -174,7 +108,7 @@
         await SelectE3();
     }
 
-    public async Task CreateMovimientoPlanillaData()
+    private async Task CreateMovimientoPlanillaData()
     {
         var apiName = $"api/Varios/MovimientoPlanillaInsert?conceptos={movimientoPlanilla.Concepto}&prioridad={movimientoPlanilla.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla.Cuenta1}&cuenta2={movimientoPlanilla.Cuenta2}&cuenta3={movimientoPlanilla.Cuenta3}&cuenta4={movimientoPlanilla.Cuenta4}&MovimientoExcepcion1={movimientoPlanilla.MovimientoExcepcion1}&MovimientoExcepcion2={movimientoPlanilla.MovimientoExcepcion2}&MovimientoExcepcion3={apiME.First(me => me.DesripMovimientoExce == selectedME3).DesripMovimientoExce.Replace(" ", "%20")}&Traba_Aplica_iess={movimientoPlanilla.Aplica_iess}&Traba_Proyecto_imp_renta={movimientoPlanilla.Aplica_imp_renta}&Aplica_Proy_Renta={movimientoPlanilla.Aplica_imp_renta}&Empresa_Afecta_Iess={movimientoPlanilla.Empresa_Afecta_Iess}";
 
@@ -188,18 +122,6 @@
         }
     }
 
-    private async Task GetQuestions()
-    {
-
-        if (movimientoPlanilla.Concepto != null && movimientoPlanilla.Prioridad != 0 && movimientoPlanilla.TipoOperacion != null && movimientoPlanilla.Cuenta1 != null && movimientoPlanilla.Cuenta2 != null && movimientoPlanilla.Cuenta3 != null && movimientoPlanilla.Cuenta4 != null)
-        {
-            if (currentSection == totalSections)
-            {
-                FullfilledSuccessful = true; // Marcar como completado si es la última sección
-            }
-        }
-    }
-
     private async Task UpdateMovimientoPlanillaData()
     {
         var apiName = $"api/Varios/MovimientoPlanillaUpdate?codigoplanilla={movimientoPlanilla.CodigoConcepto}&conceptos={movimientoPlanilla.Concepto}&prioridad={movimientoPlanilla.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla.Cuenta1}&cuenta2={movimientoPlanilla.Cuenta2}&cuenta3={movimientoPlanilla.Cuenta3}&cuenta4={movimientoPlanilla.Cuenta4}&MovimientoExcepcion1={movimientoPlanilla.MovimientoExcepcion1}&MovimientoExcepcion2={movimientoPlanilla.MovimientoExcepcion2}&MovimientoExcepcion3={apiME.First(me => me.DesripMovimientoExce == selectedME3).DesripMovimientoExce.Replace(" ", "%20")}&Traba_Aplica_iess={movimientoPlanilla.Aplica_iess}&Traba_Proyecto_imp_renta={movimientoPlanilla.Aplica_imp_renta}&Aplica_Proy_Renta={movimientoPlanilla.Aplica_imp_renta}&Empresa_Afecta_Iess={movimientoPlanilla.Empresa_Afecta_Iess}";
@@ -207,6 +129,7 @@
         try
         {
             var response = await Http.GetFromJsonAsync<MovimientoPlanilla>(apiName);
+             
         }
         catch (HttpRequestException e)
         {
@@ -282,8 +205,4 @@
             selectedME3 = null; // Asignar un valor predeterminado en caso de que movimientoPlanilla sea nulo o no contenga elementos
         }
     }
-    @*private void Create()
-    {
-        CreateMovimientoPlanillaData();
-    }*@
 }
