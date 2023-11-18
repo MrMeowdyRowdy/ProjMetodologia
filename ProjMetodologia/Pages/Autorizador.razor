@@ -1,0 +1,125 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+
+@page "/Autorizador/{opcion}"
+@layout LoginLayout
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject SharedStateService SharedState
+
+<div class="card sign-up-card">
+    <div class="flex-container">
+        <div class="left-column">
+            <div class="sign-up-text">
+                <h2>Autorizador</h2>
+                <form class="sign-up-form" onsubmit="@(async () => { await GetUser(); })">
+                    <label>Usuario</label>
+                    <input @bind="user.Username" class="form-control" placeholder="XXXX" />
+                    <label>Contraseña</label>
+                    <input @bind="user.Password" class="form-control" type="password" placeholder="XXXXX" />
+                    <button type="submit" class="btn submit-btn" style="@(loginSuccessful ? "display: none;" : "")">Login</button>
+                </form>
+            </div>
+        </div>
+        <div class="right-column">
+            <img class="sign-up-img"
+                 src="./Images/illustration-sign-up-desktop.svg"
+                 alt="" />
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserDto user = new UserDto();
+    private Autorizador[] apiResponse;
+    private string resultado, mensaje;
+    private bool loginSuccessful = false;
+    private bool showPopup = false;
+    [Parameter]
+    public string opcion { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Obtener el valor del parámetro de la URL
+        opcion = System.Net.WebUtility.UrlDecode(opcion);
+    }
+
+    private async Task GetUser()
+    {
+        await GetUserData();
+        if (apiResponse != null)
+        {
+            loginSuccessful = true; // Actualiza la variable de estado
+        }
+    }
+
+    private async Task GetUserData()
+    {
+        var apiName = $"api/Varios/GetAutorizador?usuario={user.Username}&password={user.Password}";
+
+        try
+        {
+            apiResponse = await Http.GetFromJsonAsync<Autorizador[]>(apiName);
+            mensaje = apiResponse[0].OBSERVACION;
+
+            if (apiResponse != null && apiResponse[0].OBSERVACION.Equals("INGRESO EXITOSO"))
+            {
+                loginSuccessful = true;
+                NavigationManager.NavigateTo(String.Concat("/", opcion));
+            }
+            else
+            {
+                loginSuccessful = false; // Agrega esta línea
+                LimpiarCampos();
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            mensaje = "FALLO EN EL ACCESO";
+            apiResponse = null;
+            loginSuccessful = false; // Agrega esta línea
+            LimpiarCampos();
+        }
+        catch (Exception e)
+        {
+            mensaje = "FALLO EN EL ACCESO";
+            apiResponse = null;
+            loginSuccessful = false; // Agrega esta línea
+            LimpiarCampos();
+        }
+    }
+
+    private void Validate()
+    {
+        if (loginSuccessful)
+        {
+            resultado = "Access";
+            NavigationManager.NavigateTo("/Index");
+            showPopup = false;
+        }
+        else
+        {
+            resultado = "";
+            showPopup = true;
+        }
+    }
+
+    private void ClosePopup()
+    {
+        showPopup = false;
+    }
+
+    private void LimpiarCampos()
+    {
+        apiResponse = null;
+        user.Username = string.Empty;
+        user.Password = string.Empty;
+        resultado = string.Empty;
+        mensaje = string.Empty;
+        loginSuccessful = false;
+    }
+
+}
+
