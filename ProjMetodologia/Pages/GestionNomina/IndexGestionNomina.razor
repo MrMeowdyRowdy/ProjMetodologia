@@ -1,0 +1,86 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+@using ProjMetodologia.Data.GestionNomina
+
+@page "/GestionNomina"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject SharedStateService SharedState
+
+<h3>Gestion de Nomina</h3>
+<h3>Sede: @SharedState.CodEmisor</h3>
+
+<button class="btn submit-btn-creates" @onclick="CreateGestionNominaData">Create</button>
+
+@if (gestionNominas != null)
+{
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th class="white-text">Sucursal</th>
+                <th class="white-text">Código Concepto Nómina</th>
+                <th class="white-text">Descripción Concepto</th>
+                <th class="white-text">Código Categoría Ocupacional</th>
+                <th class="white-text">Descripción Categoría</th>
+                <th class="white-text">Código Operación</th>
+                <th class="white-text">Código Cuenta Contable</th>
+                <th class="white-text">Código Tipo Cuenta</th>
+                <th class="white-text">Descripción Cuenta</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var nomina in gestionNominas)
+            {
+                <tr>
+                    <td class="white-text">@nomina.Sucursal</td>
+                    <td class="white-text">@nomina.CodigoConceptoNomina</td>
+                    <td class="white-text">@nomina.DescripcionConcepto</td>
+                    <td class="white-text">@nomina.CodigoCategoriaocupacional</td>
+                    <td class="white-text">@nomina.DescripcionCategoria</td>
+                    <td class="white-text">@nomina.CodigoOperacion</td>
+                    <td class="white-text">@nomina.CodigoCuentaContable</td>
+                    <td class="white-text">@nomina.CodigoTipoCuenta</td>
+                    <td class="white-text">@nomina.DescripcionCuenta</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+
+    private List<GestionNomina> gestionNominas = new List<GestionNomina>();
+    //private GestionNomina gestionNomina;
+
+    private async Task GetGestionNominaData()
+    {
+        var apiName = $"api/Varios/Gestion_Cuenta_Contable_Nomina_Select?Sucursal={SharedState.CodEmisor}";
+
+        try
+        {
+            gestionNominas = await Http.GetFromJsonAsync<List<GestionNomina>>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del centro de costos: {e.Message}");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetGestionNominaData();
+    }
+
+    private void CreateGestionNominaData()
+    {
+        NavigationManager.NavigateTo("/CreateGestionNomina");
+    }
+
+}

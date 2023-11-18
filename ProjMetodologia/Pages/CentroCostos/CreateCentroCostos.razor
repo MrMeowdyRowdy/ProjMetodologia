@@ -9,7 +9,7 @@
 
 <h3>Agregar centro de costos</h3>
 <div>
-    <form onsubmit="return false;">
+    <form @onsubmit="CreateCentroCostosData">
         <div class="create-form">
             <label for="codigo">Código:</label>
             <input type="text" class="form-control" id="codigo" @bind="centroCostos.Codigo">
@@ -18,7 +18,7 @@
             <label for="nombre">Nombre de Centro de Costos:</label>
             <input type="text" class="form-control" id="nombre" @bind="centroCostos.NombreCentroCostos">
         </div>
-        <button @onsubmit="CreateCentroCostosData" type="submit" class="btn submit-btn">Crear</button>
+        <button type="submit" class="btn submit-btn">Crear</button>
         <button @onclick="Goback" class="btn submit-btn">Cancelar</button>
     </form>
 </div>

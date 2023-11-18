@@ -1,0 +1,223 @@
+﻿@using ProjMetodologia.Data
+@using ProjMetodologia.Data.GestionNomina
+@using ProjMetodologia.Data.Trabajador
+@using ProjMetodologia.Data.MovimientoPlanilla
+@using System.Net.Http
+@using System.Net.Http.Json
+
+@page "/CreateGestionNomina"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Create Gestion de Nomina</h3>
+
+<form @onsubmit="CreateGestionNominaData">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="create-form">
+                <label for="Sucursal">Sucursal</label>
+                <input type="number" class="form-control" id="Sucursal" @bind="@gestionNomina.Sucursal">
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="create-form">
+                <label>Emisor</label>
+                <select @bind="codConceptoNomina" class="form-control">
+                    <option value="">Seleccione un concepto de nomina</option>
+                    @foreach (var nomina in apiResponseNominaL)
+                    {
+                        <option value="@nomina.CodigoConcepto">@nomina.Concepto</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="create-form">
+        <label>Categoria ocupacional</label>
+        <select @bind="codCategoOcupacional" class="form-control">
+            <option value="">Seleccione una categoria ocupacional</option>
+            @foreach (var ocupacion in apiResponseOcupacionalL)
+            {
+                <option value="@ocupacion.Codigo">@ocupacion.Descripcion</option>
+            }
+        </select>
+    </div>
+
+    <div class="create-form">
+        <label>Tipo de operacion</label>
+        <select @bind="codOperacion" class="form-control">
+            <option value="">Seleccione el tipo de operacion</option>
+            @foreach (var operacion in apiResponseOperacionL)
+            {
+                <option value="@operacion.CodigoTipooperacion">@operacion.NombreOperacion</option>
+            }
+        </select>
+    </div>
+
+    <div class="row align-items-start">
+        <div class="col-md">
+            <div class="create-form">
+                <label>Cuenta Contable</label>
+                <input type="text" class="form-control" placeholder="Filtro Cuenta Contable" @bind="filterCodigoCuentaContable">
+                <select class="form-control">
+                    <option value="">Seleccione una cuenta contable</option>
+                    @foreach (var cuenta in FilteredCuentas)
+                    {
+                        <option value="@cuenta.Cuenta" value1="@cuenta.CodigoTipoCuenta">@cuenta.Cuenta.ToString() - @cuenta.DescripcionCuenta</option>
+                    }
+                </select>
+            </div>
+        </div>
+            <button type="submit" class="btn submit-btn" style="margin-right: 10px;">Create</button>
+            <button type="button" class="btn submit-btn" style="margin-right: 10px;" @onclick="GoBack">Cancelar</button>
+    </div>
+
+</form>
+
+
+@code {
+
+    private GestionNomina gestionNomina = new GestionNomina();
+    private List<MovimientoPlanilla> apiResponseNominaL = new List<MovimientoPlanilla>();
+    private MovimientoPlanilla[] apiResponseNomina;
+    private List<AtributoSalario> apiResponseOcupacionalL = new List<AtributoSalario>();
+    private AtributoSalario[] apiResponseOcupacional;
+    private List<TipoOperaciones> apiResponseOperacionL = new List<TipoOperaciones>();
+    private TipoOperaciones[] apiResponseOperacion;
+    private List<PlandeCuentas> apiResponseCuentaL = new List<PlandeCuentas>();
+    private PlandeCuentas[] apiResponseCuenta;
+    private int codConceptoNomina;
+    private int codCategoOcupacional;
+    private string codOperacion;
+    private double codCuenta;
+    private string codTipocuenta;
+    private string filterCodigoCuentaContable = "";
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/GestionNomina");
+    }
+
+    private void CreateGestionNominaData()
+    {
+        // Implement the logic to create a new GestionNomina instance
+        // You can add it to your data source or take any other actions
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetConceptoNominaData();
+        await GetCategoOcupacionalData();
+        await GetCategoOperacionData();
+        await GetCategoNominaData();
+    }
+
+    private async Task GetConceptoNominaData()
+    {
+        var apiEmisor = "api/Varios/MovimientoPlanillaSelect";
+
+        try
+        {
+            apiResponseNominaL = await Http.GetFromJsonAsync<List<MovimientoPlanilla>>(apiEmisor);
+            if (apiResponseNomina != null && apiResponseNomina.Length > 0)
+            {
+                codConceptoNomina = apiResponseNomina[0]?.CodigoConcepto ?? 0;
+            }
+            else
+            {
+                codConceptoNomina = 0; // Asignar un valor predeterminado en caso de que apiResponse sea nulo o no contenga elementos
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos de nomina: {e.Message}");
+        }
+    }
+
+    private async Task GetCategoOcupacionalData()
+    {
+        var apiEmisor = "api/Varios/CategoriaOcupacional";
+
+        try
+        {
+            apiResponseOcupacionalL = await Http.GetFromJsonAsync<List<AtributoSalario>>(apiEmisor);
+            if (apiResponseOcupacional != null && apiResponseOcupacional.Length > 0)
+            {
+                codCategoOcupacional = apiResponseOcupacional[0]?.Codigo ?? 0;
+            }
+            else
+            {
+                codCategoOcupacional = 0; // Asignar un valor predeterminado en caso de que apiResponse sea nulo o no contenga elementos
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+        }
+    }
+
+    private async Task GetCategoOperacionData()
+    {
+        var apiEmisor = "api/Varios/TipoOperacion";
+
+        try
+        {
+            apiResponseOperacionL = await Http.GetFromJsonAsync<List<TipoOperaciones>>(apiEmisor);
+            if (apiResponseOperacion != null && apiResponseOperacion.Length > 0)
+            {
+                codOperacion = apiResponseOperacion[0].CodigoTipooperacion;
+            }
+            else
+            {
+                codOperacion = "0"; // Asignar un valor predeterminado en caso de que apiResponse sea nulo o no contenga elementos
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+        }
+    }
+
+    private async Task GetCategoNominaData()
+    {
+        var apiEmisor = "api/Varios/PlandeCuentas";
+
+        try
+        {
+            apiResponseCuentaL = await Http.GetFromJsonAsync<List<PlandeCuentas>>(apiEmisor);
+            if (apiResponseCuenta != null && apiResponseCuenta.Length > 0)
+            {
+                codCuenta = apiResponseCuenta[0].Cuenta;
+                codTipocuenta = apiResponseCuenta[0].CodigoTipoCuenta;
+            }
+            else
+            {
+                codCuenta = 0.0;
+                codTipocuenta = "0"; // Asignar un valor predeterminado en caso de que apiResponse sea nulo o no contenga elementos
+            }
+            StateHasChanged();
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+        }
+    }
+
+    private List<PlandeCuentas> FilteredCuentas
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(filterCodigoCuentaContable))
+            {
+                return apiResponseCuentaL;
+            }
+
+            return apiResponseCuentaL
+                .Where(c => c.Cuenta.ToString().StartsWith(filterCodigoCuentaContable))
+                .ToList();
+        }
+    }
+
+
+}
