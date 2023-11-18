@@ -92,6 +92,7 @@
     private string selectedME3;
     private List<TipoOperacion> apiTO = new List<TipoOperacion>();
     private List<MovimientoE3> apiME = new List<MovimientoE3>();
+    private ResponseMovimientoPlanilla[] response;
 
     protected override async Task OnInitializedAsync()
     {
@@ -114,7 +115,12 @@
 
         try
         {
-            var response = await Http.PostAsJsonAsync(apiName, movimientoPlanilla);
+            var apiResponse = await Http.PostAsJsonAsync(apiName, movimientoPlanilla);
+            response = await apiResponse.Content.ReadFromJsonAsync<ResponseMovimientoPlanilla[]>();
+            if(response != null)
+            {
+                NavigationManager.NavigateTo("/MovimientoPlanilla");
+            }
         }
         catch (HttpRequestException e)
         {
@@ -128,8 +134,12 @@
 
         try
         {
-            var response = await Http.GetFromJsonAsync<MovimientoPlanilla>(apiName);
-             
+            response = await Http.GetFromJsonAsync<ResponseMovimientoPlanilla[]>(apiName);
+            if(response != null)
+            {
+                NavigationManager.NavigateTo("MovimientoPlanilla");
+            }
+
         }
         catch (HttpRequestException e)
         {
