@@ -3,42 +3,42 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="@NavMenuCssClass" style="position: relative;">
-            <nav class="navbar-nav; flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <nav class="navbar-nav; flex-column">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                     <span class="oi oi-home" aria-hidden="true"></span> <strong>Logout</strong>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-             <NavLink class="nav-link" href="Index">
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Index">
                     <span class="oi oi-list-rich" aria-hidden="true"></span> <strong>Home</strong>
-             </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" @onclick="()=>expandSubMenu = !expandSubMenu">
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" @onclick="()=>expandSubMenu = !expandSubMenu">
                     <span class="oi oi-list-rich" aria-hidden="true"></span> <strong>Manejo de personal</strong>
-            </NavLink>
-            @if (expandSubMenu)
-            {
-                <div class="nav flex-column">
-                    <div class="nav-item px-3">
-                            <NavLink class="nav-link" href="CentroCostos">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Centro de costos
-                        </NavLink>
+                </NavLink>
+                @if (expandSubMenu)
+                {
+                    <div class="nav flex-column">
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href=@($"Autorizador/{opcion[0]}")>
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Centro de costos
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href=@($"Autorizador/{opcion[1]}")>
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Movimientos planilla
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href=@($"Autorizador/{opcion[2]}")>
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Gestion cuenta nomina
+                            </NavLink>
+                        </div>
                     </div>
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="MovimientoPlanilla">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Movimientos planilla
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-3">
-                            <NavLink class="nav-link" href="MovimientoPlanilla">
-                            <span class="oi oi-list-rich" aria-hidden="true"></span> Gestion cuenta nomina
-                        </NavLink>
-                    </div>
-                </div>   
-            }
-        </div>
+                }
+            </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" @onclick="()=>expandSubMenu1 = !expandSubMenu1">
                     <span class="oi oi-list-rich" aria-hidden="true"></span> <strong>Manejo trabajadores</strong>
@@ -124,17 +124,18 @@
                     </div>
                 }
             </div>
-    </nav>
-</div>
+        </nav>
+    </div>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
     private bool expandSubMenu;
     private bool expandSubMenu1;
- 
+    String[] opcion = { "CentroCostos", "GestionNomina", "MovimientoPlanilla" };
+
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    
+
     private void ToggleNavMenu()
     {
         if (!expandSubMenu && !expandSubMenu1)
