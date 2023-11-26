@@ -1,0 +1,75 @@
+﻿@using Data.MovimientoPlanilla
+
+@page "/movimiento-planilla"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject SharedMovimientoPlanilla sharedMovPlanilla
+
+<h3>Movimiento Planilla</h3>
+
+@if (movsPlanilla != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Concepto</th>
+                <th>Prioridad</th>
+                <th>Tipo de Operación</th>
+                <th>Excepción 1</th>
+                <th>Excepción 2</th>
+                <th>Excepción 3</th>
+                <th>IESS</th>
+                <th>Impuesto a la Renta</th>
+                <th>Afecta IESS</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <button></button>
+                    <button></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+
+@code {
+    private List<MovimientoPlanilla> movsPlanilla = new List<MovimientoPlanilla>();
+    private ResponseMovimientoPlanilla[]? apiResponse;
+
+    public async Task GetMovPlanillaData()
+    {
+        var apiURI = $"api/Varios/MovimientoPlanillaSelect";
+
+        try
+        {
+            movsPlanilla = await Http.GetFromJsonAsync<List<MovimientoPlanilla>>(apiURI);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos: {e.Message}");
+            NavigationManager.NavigateTo("/Index");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetMovPlanillaData();
+    }
+}
