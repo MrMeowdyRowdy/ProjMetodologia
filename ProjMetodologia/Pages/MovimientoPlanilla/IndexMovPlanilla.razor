@@ -7,9 +7,12 @@
 
 <h3>Movimiento Planilla</h3>
 
+<button class="btn submit-btn-creates" @onclick="CreateMovPlanilla">Create</button>
+<p></p>
+
 @if (movsPlanilla != null)
 {
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Concepto</th>
@@ -25,21 +28,24 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <button></button>
-                    <button></button>
-                </td>
-            </tr>
+            @foreach (var mov in movsPlanilla)
+            {
+                <tr>
+                    <td>@mov.Concepto</td>
+                    <td>@mov.Prioridad</td>
+                    <td>@mov.TipoOperacion</td>
+                    <td>@mov.MovimientoExcepcion1</td>
+                    <td>@mov.MovimientoExcepcion2</td>
+                    <td>@mov.MovimientoExcepcion3</td>
+                    <td>@mov.Aplica_iess</td>
+                    <td>@mov.Aplica_imp_renta</td>
+                    <td>@mov.Empresa_Afecta_Iess</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditMovPlanilla(mov)">Editar</button>
+                        <button class="btn btn-danger">Borrar</button>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }
@@ -71,5 +77,17 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetMovPlanillaData();
+    }
+
+    public void CreateMovPlanilla()
+    {
+        NavigationManager.NavigateTo("/create-movimiento-planilla");
+        sharedMovPlanilla.SetValue(null);
+    }
+
+    private void EditMovPlanilla(MovimientoPlanilla movimientoPlanillaU)
+    {
+        sharedMovPlanilla.SetValue(movimientoPlanillaU);
+        NavigationManager.NavigateTo("/create-movimiento-planilla");
     }
 }
