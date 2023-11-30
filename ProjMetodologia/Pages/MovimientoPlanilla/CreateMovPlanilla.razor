@@ -366,7 +366,6 @@ else
             response = await Http.GetFromJsonAsync<ResponseMovimientoPlanilla[]>(apiURI);
             if (response != null)
             {
-                //movimientoPlanilla = null;
                 NavigationManager.NavigateTo("/movimiento-planilla");
             }
 
