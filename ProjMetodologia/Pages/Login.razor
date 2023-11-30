@@ -32,7 +32,7 @@
                                     <div class="mb-3">
                                         <label class="mb-3">Emisor</label>
                                         <select @bind="selectedEmisor" class="form-control">
-                                            <option value="">Seleccione un emisor</option>
+                                            <option value="0">Seleccione un emisor</option>
                                             @foreach (var emisor in apiResponseE)
                                             {
                                                 <option value="@emisor.Codigo">@emisor.NombreEmisor</option>
@@ -151,7 +151,7 @@
         apiResponseE = await Http.GetFromJsonAsync<List<Emisor>>(apiEmisor);
         if (apiResponse != null && apiResponse.Length > 0)
         {
-            selectedEmisor = apiResponse[0]?.Emisor ?? 0;
+            selectedEmisor = 0;
         }
         else
         {
