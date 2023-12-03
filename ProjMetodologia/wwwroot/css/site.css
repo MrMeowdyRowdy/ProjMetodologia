@@ -552,24 +552,23 @@ h3 {
 
     /* Estilos para las celdas dentro de la tarjeta móvil */
     .mobile-table-cell {
-        margin-bottom: 8px; /* Espacio entre celdas */
+        margin-bottom: 8px; 
     }
 
         .mobile-table-cell strong {
-            color: #555555; /* Color de las letras para los títulos de las celdas */
+            color: #555555; 
         }
 
     .mobile-table-button {
         text-align: center;
-        margin-bottom: 8px; /* Centrar los botones si deseas */
+        margin-bottom: 8px; 
     }
 
-        /* Estilos para el contenedor que tiene los botones */
 
     /* Ajustar los botones para que no sean demasiado anchos */
     .btn {
-        width: auto; /* Asegura que el ancho del botón se ajuste al contenido */
-        margin: 0 5px; /* Espacio horizontal entre botones */
+        width: auto; 
+        margin: 0 5px; 
     }
 
     .submit-btn {
@@ -581,8 +580,48 @@ h3 {
         padding: 1rem 2rem;
         margin-top: 1rem;
         font-size: 1.6rem;
-        display: block; /* Hace que el botón ocupe todo el ancho disponible */
+        display: block; 
         width: 100%;
     }
+
+    .card {
+        width: 90%;
+        min-height: auto; /* Ajusta esto según sea necesario */
+    }
+
+    /* Cambia la dirección del flex-container para apilar elementos verticalmente */
+    .flex-container {
+        flex-direction: column;
+    }
+
+    /* Ajusta las columnas para que ocupen todo el ancho disponible */
+    .left-column, .right-column {
+        flex: 0 0 100%;
+        max-width: 100%;
+        padding: 10px; /* Ajusta el relleno si es necesario */
+    }
+
+    /* Opcionalmente, oculta la columna derecha si contiene elementos no esenciales */
+    .right-column {
+        display: none;
+    }
+
+    /* Ajusta el tamaño y el espaciado de los elementos del formulario */
+    .sign-up-form input,
+    .sign-up-form select,
+    .submit-btn {
+        width: 100%; /* Hace que los campos de entrada ocupen todo el ancho disponible */
+        font-size: 1.4rem; /* Ajusta el tamaño de la fuente si es necesario */
+    }
+
+    /* Ajusta el tamaño del texto y el espaciado en general */
+    .sign-up-text h2 {
+        font-size: 3rem; /* Reduce el tamaño de la fuente para los títulos */
+    }
+
+    .sign-up-text, .sign-up-form {
+        padding: 20px; /* Ajusta el relleno para un mejor espaciado */
+    }
+
 }
 
