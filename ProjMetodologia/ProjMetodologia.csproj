@@ -10,4 +10,8 @@
     <None Include="wwwroot\Images\logoExample.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.102.1" />
+  </ItemGroup>
+
 </Project>
