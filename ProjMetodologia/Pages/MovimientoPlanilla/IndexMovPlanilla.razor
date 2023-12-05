@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject SharedMovimientoPlanilla sharedMovPlanilla
+@inject IJSRuntime JSRuntime
 
 <h3>Movimiento Planilla</h3>
 
@@ -12,42 +13,66 @@
 
 @if (movsPlanilla != null)
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Concepto</th>
-                <th>Prioridad</th>
-                <th>Tipo de Operación</th>
-                <th>Excepción 1</th>
-                <th>Excepción 2</th>
-                <th>Excepción 3</th>
-                <th>IESS</th>
-                <th>Impuesto a la Renta</th>
-                <th>Afecta IESS</th>
-                <th>Manage</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var mov in movsPlanilla)
-            {
+    if (isMobile)
+    {
+        @foreach (var mov in movsPlanilla)
+        {
+            <div class="mobile-table-row">
+                <div class="mobile-table-cell"><strong>Concepto:</strong> @mov.Concepto</div>
+                <div class="mobile-table-cell"><strong>Prioridad:</strong> @mov.Prioridad</div>
+                <div class="mobile-table-cell"><strong>Tipo de operación:</strong> @mov.TipoOperacion</div>
+                <div class="mobile-table-cell"><strong>Excepción 1:</strong> @mov.MovimientoExcepcion1</div>
+                <div class="mobile-table-cell"><strong>Excepción 2:</strong> @mov.MovimientoExcepcion2</div>
+                <div class="mobile-table-cell"><strong>Excepción 3:</strong>@mov.MovimientoExcepcion3</div>
+                <div class="mobile-table-cell"><strong>IESS:</strong>@mov.Aplica_iess</div>
+                <div class="mobile-table-cell"><strong>Impuesto a la Renta:</strong>@mov.Aplica_imp_renta</div>
+                <div class="mobile-table-cell"><strong>Afecta IESS:</strong>@mov.Empresa_Afecta_Iess</div>
+                <div class="mobile-table-button">
+                    <button class="btn btn-primary" @onclick="() => EditMovPlanilla(mov)">Editar</button>
+                    <button class="btn btn-danger">Borrar</button>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@mov.Concepto</td>
-                    <td>@mov.Prioridad</td>
-                    <td>@mov.TipoOperacion</td>
-                    <td>@mov.MovimientoExcepcion1</td>
-                    <td>@mov.MovimientoExcepcion2</td>
-                    <td>@mov.MovimientoExcepcion3</td>
-                    <td>@mov.Aplica_iess</td>
-                    <td>@mov.Aplica_imp_renta</td>
-                    <td>@mov.Empresa_Afecta_Iess</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => EditMovPlanilla(mov)">Editar</button>
-                        <button class="btn btn-danger">Borrar</button>
-                    </td>
+                    <th>Concepto</th>
+                    <th>Prioridad</th>
+                    <th>Tipo de Operación</th>
+                    <th>Excepción 1</th>
+                    <th>Excepción 2</th>
+                    <th>Excepción 3</th>
+                    <th>IESS</th>
+                    <th>Impuesto a la Renta</th>
+                    <th>Afecta IESS</th>
+                    <th>Manage</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var mov in movsPlanilla)
+                {
+                    <tr>
+                        <td>@mov.Concepto</td>
+                        <td>@mov.Prioridad</td>
+                        <td>@mov.TipoOperacion</td>
+                        <td>@mov.MovimientoExcepcion1</td>
+                        <td>@mov.MovimientoExcepcion2</td>
+                        <td>@mov.MovimientoExcepcion3</td>
+                        <td>@mov.Aplica_iess</td>
+                        <td>@mov.Aplica_imp_renta</td>
+                        <td>@mov.Empresa_Afecta_Iess</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => EditMovPlanilla(mov)">Editar</button>
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
 else
 {
@@ -58,6 +83,18 @@ else
 @code {
     private List<MovimientoPlanilla> movsPlanilla = new List<MovimientoPlanilla>();
     private ResponseMovimientoPlanilla[]? apiResponse;
+    private bool isMobile;
+    private bool isLoaded = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isLoaded)
+        {
+            isMobile = await JSRuntime.InvokeAsync<bool>("isMobileDevice");
+            isLoaded = true; // Asegurarse de que no se vuelva a cargar
+            StateHasChanged(); // Esto notificará a Blazor que debe volver a renderizar el componente
+        }
+    }
 
     public async Task GetMovPlanillaData()
     {
