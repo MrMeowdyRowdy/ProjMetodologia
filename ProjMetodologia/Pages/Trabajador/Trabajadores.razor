@@ -37,26 +37,24 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>Cedula</th>
                     <th>Nombres</th>
-                    <th>Apellidos</th>
-                    <th>Identificacion</th>
-                    <th>CarnetIESS</th>
+                    <th>Apellido materno</th>
+                    <th>Apellido paterno</th>
                     <th>Genero</th>
                     <th>Nivel Salarial</th>
-                    <th>Fecha Ingreso</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in trabajadorApiE)
                 {
                     <tr>
-                        <td>@item.Nombres</td>
-                        <td>@($"{item.Apellido_Paterno} {item.Apellido_Materno}")</td>
                         <td>@item.Identificacion</td>
-                        <td>@item.CarnetIESS</td>
+                        <td>@item.Nombres</td>
+                        <td>@item.Apellido_Materno</td>
+                        <td>@item.Apellido_Paterno</td>
                         <td>@item.Genero</td>
                         <td>@item.Nivel_Salarial</td>
-                        <td>@item.FechaIngreso.ToShortDateString()</td>
                     </tr>
                 }
             </tbody>
@@ -106,7 +104,7 @@ else
     private async void GenerarReporte()
     {
         var xls = new ReporteControlador();
-        await xls.GenerarReporteTrabajador(js, trabajadorApiE, $"ReporteTrabajadoresSucursal{SharedState.CodEmisor}.xlsx", SharedState.CodEmisor);
+        await xls.GenerarReporteTrabajador(JSRuntime, trabajadorApiE, $"ReporteTrabajadoresSucursal{SharedState.CodEmisor}.xlsx", SharedState.CodEmisor);
     }
 
 }
