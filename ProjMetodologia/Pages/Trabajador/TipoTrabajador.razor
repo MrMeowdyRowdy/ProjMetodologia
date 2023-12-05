@@ -6,29 +6,42 @@
 
 @page "/TipoTrabajador"
 @inject HttpClient Http
-
+@inject IJSRuntime JSRuntime
 
 <h3>Tipo de trabajador</h3>
 
 @if (tipoTrabajador != null)
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Codigo</th>
-                <th>Descripcion</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var atributo in tipoTrabajador)
-            {
+    if (isMobile)
+    {
+        @foreach (var atributo in tipoTrabajador)
+        {
+            <div class="mobile-table-row">
+                <div class="mobile-table-cell"><strong>Código:</strong> @atributo.Codigo</div>
+                <div class="mobile-table-cell"><strong>Descripción:</strong> @atributo.Descripcion</div>
+            </div>
+        }
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@atributo.Codigo</td>
-                    <td>@atributo.Descripcion</td>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var atributo in tipoTrabajador)
+                {
+                    <tr>
+                        <td>@atributo.Codigo</td>
+                        <td>@atributo.Descripcion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
 else
 {
@@ -37,7 +50,18 @@ else
 
 @code {
     private List<AtributoTrabajador> tipoTrabajador = new List<AtributoTrabajador>();
+    private bool isMobile;
+    private bool isLoaded = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isLoaded)
+        {
+            isMobile = await JSRuntime.InvokeAsync<bool>("isMobileDevice");
+            isLoaded = true; // Asegurarse de que no se vuelva a cargar
+            StateHasChanged(); // Esto notificará a Blazor que debe volver a renderizar el componente
+        }
+    }
     private async Task GetTrabajadorData()
     {
         var apiName = $"api/Varios/TipoTrabajador";

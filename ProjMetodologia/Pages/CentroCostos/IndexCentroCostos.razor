@@ -9,38 +9,50 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject SharedCentroCostos sharedCentroCostos
-
+@inject IJSRuntime JSRuntime
 
 <h3>Centro de costos</h3>
 
 <button class="btn submit-btn-creates" @onclick="CreateCentroCostos">Create</button>
 
-@if (centroCostos != null)
-{
-    <table class="table custom-table">
-        <thead>
-            <tr>
-                <th>Codigo</th>
-                <th>Descripcion</th>
-                <th>Mensaje</th> ****
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var atributo in centroCostos)
-            {
+@if (centroCostos != null){
+    @if (isMobile){
+        @foreach (var atributo in centroCostos){
+        <div class="mobile-table-row">
+            <div class="mobile-table-cell"><strong>Codigo:</strong> @atributo.Codigo</div>
+            <div class="mobile-table-cell"><strong>Descripcion:</strong> @atributo.NombreCentroCostos</div>
+            <div class="mobile-table-button">
+                <button class="btn btn-primary" @onclick="() => EditCentroCostos(atributo)">Edit</button>
+                <button class="btn btn-danger" @onclick="() => DeleteCentroCostos(atributo)">Delete</button>
+            </div>
+        </div>
+        }
+        
+    }
+    else{
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@atributo.Codigo</td>
-                    <td>@atributo.NombreCentroCostos</td>
-                    <td>@atributo.Mensaje</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => EditCentroCostos(atributo)">Edit</button>
-                        <button class="btn btn-danger" @onclick="() => DeleteCentroCostos(atributo)">Delete</button>
-                    </td>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
+                    <th>Manage</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var atributo in centroCostos)
+                {
+                    <tr>
+                        <td>@atributo.Codigo</td>
+                        <td>@atributo.NombreCentroCostos</td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => EditCentroCostos(atributo)">Edit</button>
+                            <button class="btn btn-danger" @onclick="() => DeleteCentroCostos(atributo)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
 else
 {
@@ -48,9 +60,22 @@ else
 }
 
 @code {
+
     private List<CentroCostos> centroCostos = new List<CentroCostos>();
     private CentroCostos centroCosto;
     private ResponseCentroCostos[] apiResponse;
+    private bool isMobile;
+    private bool isLoaded = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isLoaded)
+        {
+            isMobile = await JSRuntime.InvokeAsync<bool>("isMobileDevice");
+            isLoaded = true; // Asegurarse de que no se vuelva a cargar
+            StateHasChanged(); // Esto notificará a Blazor que debe volver a renderizar el componente
+        }
+    }
 
     public async Task GetCentroCostosData()
     {
@@ -65,6 +90,7 @@ else
             Console.WriteLine($"Error al obtener datos del centro de costos: {e.Message}");
         }
     }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -104,4 +130,7 @@ else
     {
         NavigationManager.NavigateTo("/CreateCentroCostos");
     }
+
+   
+
 }

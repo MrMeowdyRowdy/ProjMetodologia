@@ -8,6 +8,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject SharedStateService SharedState
+@inject IJSRuntime JSRuntime
 
 <h3>Gestion de Nomina</h3>
 <h3>Sede: @SharedState.CodEmisor</h3>
@@ -16,38 +17,58 @@
 
 @if (gestionNominas != null)
 {
-    <table class="table custom-table">
-        <thead>
-            <tr>
-                <th class="white-text">Sucursal</th>
-                <th class="white-text">Código Concepto Nómina</th>
-                <th class="white-text">Descripción Concepto</th>
-                <th class="white-text">Código Categoría Ocupacional</th>
-                <th class="white-text">Descripción Categoría</th>
-                <th class="white-text">Código Operación</th>
-                <th class="white-text">Código Cuenta Contable</th>
-                <th class="white-text">Código Tipo Cuenta</th>
-                <th class="white-text">Descripción Cuenta</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var nomina in gestionNominas)
-            {
+    @if (isMobile)
+    {
+        @foreach (var nomina in gestionNominas)
+        {
+            <div class="mobile-table-row">
+                <div class="mobile-table-cell"><strong>Sucursal:</strong> @nomina.Sucursal</div>
+                <div class="mobile-table-cell"><strong>Código Concepto Nómina:</strong> @nomina.CodigoConceptoNomina</div>
+                <div class="mobile-table-cell"><strong>Descripción Concepto:</strong> @nomina.DescripcionConcepto</div>
+                <div class="mobile-table-cell"><strong>Código Categoría Ocupacional:</strong> @nomina.CodigoCategoriaocupacional</div>
+                <div class="mobile-table-cell"><strong>Descripción Categoría:</strong> @nomina.DescripcionCategoria</div>
+                <div class="mobile-table-cell"><strong>Código Operación:</strong> @nomina.CodigoOperacion</div>
+                <div class="mobile-table-cell"><strong>Código Cuenta Contable:</strong> @nomina.CodigoCuentaContable</div>
+                <div class="mobile-table-cell"><strong>Código Tipo Cuenta:</strong> @nomina.CodigoTipoCuenta</div>
+                <div class="mobile-table-cell"><strong>Descripción Cuenta:</strong> @nomina.DescripcionCuenta</div>
+            </div>
+        }
+    }
+    else
+    {
+        <table class="table custom-table">
+            <thead>
                 <tr>
-                    <td class="white-text">@nomina.Sucursal</td>
-                    <td class="white-text">@nomina.CodigoConceptoNomina</td>
-                    <td class="white-text">@nomina.DescripcionConcepto</td>
-                    <td class="white-text">@nomina.CodigoCategoriaocupacional</td>
-                    <td class="white-text">@nomina.DescripcionCategoria</td>
-                    <td class="white-text">@nomina.CodigoOperacion</td>
-                    <td class="white-text">@nomina.CodigoCuentaContable</td>
-                    <td class="white-text">@nomina.CodigoTipoCuenta</td>
-                    <td class="white-text">@nomina.DescripcionCuenta</td>
+                    <th>Sucursal</th>
+                    <th>Código Concepto Nómina</th>
+                    <th>Descripción Concepto</th>
+                    <th>Código Categoría Ocupacional</th>
+                    <th>Descripción Categoría</th>
+                    <th>Código Operación</th>
+                    <th>Código Cuenta Contable</th>
+                    <th>Código Tipo Cuenta</th>
+                    <th>Descripción Cuenta</th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var nomina in gestionNominas)
+                {
+                    <tr>
+                        <td>@nomina.Sucursal</td>
+                        <td>@nomina.CodigoConceptoNomina</td>
+                        <td>@nomina.DescripcionConcepto</td>
+                        <td>@nomina.CodigoCategoriaocupacional</td>
+                        <td>@nomina.DescripcionCategoria</td>
+                        <td>@nomina.CodigoOperacion</td>
+                        <td>@nomina.CodigoCuentaContable</td>
+                        <td>@nomina.CodigoTipoCuenta</td>
+                        <td>@nomina.DescripcionCuenta</td>
+                    </tr>
+                }
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
 }
 else
 {
@@ -58,6 +79,18 @@ else
 
     private List<GestionNomina> gestionNominas = new List<GestionNomina>();
     //private GestionNomina gestionNomina;
+    private bool isMobile;
+    private bool isLoaded = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isLoaded)
+        {
+            isMobile = await JSRuntime.InvokeAsync<bool>("isMobileDevice");
+            isLoaded = true; // Asegurarse de que no se vuelva a cargar
+            StateHasChanged(); // Esto notificará a Blazor que debe volver a renderizar el componente
+        }
+    }
 
     private async Task GetGestionNominaData()
     {
