@@ -1,0 +1,378 @@
+﻿@using Data.MovimientoPlanilla
+@using System.Net.Http
+
+@page "/create-movimiento-planilla"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject SharedMovimientoPlanilla sharedMovimientoPlanilla
+
+
+@if (sharedMovimientoPlanilla.Value != null)
+{
+    <h3>Editar Movimiento Planilla</h3>
+}
+else
+{
+    <h3>Crear Movimiento Planilla</h3>
+}
+
+<form>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Concepto</span>
+        <input type="text" id="Concepto" class="form-control" @bind="movimientoPlanilla.Concepto"/>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Prioridad</span>
+        <input type="number" id="Prioridad" class="form-control" @bind="movimientoPlanilla.Prioridad"/>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Tipo de Operación</span>
+        <select @bind="selectedTO" class="form-select">
+            <option value="">Seleccione el tipo de operación...</option>
+            @foreach (var to in apiTO)
+            {
+                <option value="@to.CodigoTipooperacion">@to.NombreOperacion</option>
+            }
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Cuenta 1</span>
+        <input type="text" id="Cuenta1" class="form-control" @bind="movimientoPlanilla.Cuenta1" />
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Cuenta 2</span>
+        <input type="text" id="Cuenta2" class="form-control" @bind="movimientoPlanilla.Cuenta2" />
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Cuenta 3</span>
+        <input type="text" id="Cuenta3" class="form-control" @bind="movimientoPlanilla.Cuenta3" />
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Cuenta 4</span>
+        <input type="text" id="Cuenta4" class="form-control" @bind="movimientoPlanilla.Cuenta4" />
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Movimiento Excepción 1</span>
+        <select @bind="selectedME1" class="form-select">
+            <option value="">Seleccione la Excepción...</option>
+            @foreach (var me1 in apiME12)
+            {
+                <option value="@me1.DesripMovimientoExce">@me1.CodigoMovimientoExce</option>
+            }
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Movimiento Excepción 2</span>
+        <select @bind="selectedME2" class="form-select">
+            <option value="">Seleccione la Excepción...</option>
+            @foreach (var me2 in apiME12)
+            {
+                <option value="@me2.DesripMovimientoExce">@me2.CodigoMovimientoExce</option>
+            }
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Movimiento Excepción 3</span>
+        <select @bind="selectedME3" class="form-select">
+            <option value="">Seleccione la Excepción...</option>
+            @foreach (var me3 in apiME3)
+            {
+                <option value="@me3.DesripMovimientoExce">@me3.CodigoMovimientoExce</option>
+            }
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Aplica IESS</span>
+        <select @bind="selectedAIESS" class="form-select">
+            <option value="2">Seleccione...</option>
+            <option value="0">No Aplica</option>
+            <option value="1">Si Aplica</option>
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Aplica Impuesto a la Renta</span>
+        <select @bind="selectedAIR" class="form-select">
+            <option value="2">Seleccione...</option>
+            <option value="0">No Aplica</option>
+            <option value="1">Si Aplica</option>
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text">Afecta IESS</span>
+        <select @bind="selectedAfIESS" class="form-select">
+            <option value="2">Seleccione...</option>
+            <option value="0">No Aplica</option>
+            <option value="1">Si Aplica</option>
+        </select>
+    </div>
+    @if (sharedMovimientoPlanilla.Value != null)
+    {
+        <button type="button" class="btn btn-primary" @onclick=UpdateMovPlanilla>Editar</button>
+    }
+    else
+    {
+        <button type="button" class="btn btn-primary" @onclick=CreateMovPlanillaD>Crear</button>
+    }
+</form>
+
+
+@code {
+    private MovimientoPlanilla? movimientoPlanilla;
+    private int selectedTO, selectedAIESS, selectedAfIESS, selectedAIR;
+    private string? selectedME1, selectedME2, selectedME3;
+    private List<MovimientoE3> apiME12 = new List<MovimientoE3>(), apiME3 = new List<MovimientoE3>();
+    private List<TipoOperacion> apiTO = new List<TipoOperacion>();
+    private ResponseMovimientoPlanilla[]? response;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (sharedMovimientoPlanilla.Value != null)
+        {
+            movimientoPlanilla = sharedMovimientoPlanilla.Value;
+        }
+        else
+        {
+            movimientoPlanilla = new MovimientoPlanilla();
+        }
+        await GetTO();
+        await GetME12();
+        await GetME3();
+        await SelectE1();
+        await SelectE2();
+        await SelectE3();
+        await SelectAIESS();
+        await SelectAIR();
+        await SelectAfIESS();
+    }
+
+    private async Task GetTO()
+    {
+        var URIapiTO = "api/Varios/TipoOperacion";
+
+        try
+        {
+            apiTO = await Http.GetFromJsonAsync<List<TipoOperacion>>(URIapiTO);
+            if (movimientoPlanilla != null)
+            {
+                foreach (var TO in apiTO)
+                {
+                    if (movimientoPlanilla.TipoOperacion != null && movimientoPlanilla.TipoOperacion.Equals(TO.NombreOperacion))
+                    {
+                        selectedTO = TO.CodigoTipooperacion;
+                    }
+                    else if (movimientoPlanilla.TipoOperacion != null && movimientoPlanilla.TipoOperacion.Equals("Ingreso"))
+                    {
+                        selectedTO = 1;
+                    }
+                    else if (movimientoPlanilla.TipoOperacion != null && movimientoPlanilla.TipoOperacion.Equals("Egreso"))
+                    {
+                        selectedTO = 2;
+                    }
+                }
+            }
+            else
+            {
+                selectedTO = 0; // Asignar un valor predeterminado en caso de que movimientoPlanilla sea nulo o no contenga elementos
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+        }
+    }
+
+    private async Task GetME12()
+    {
+        var URIapiME12 = "api/Varios/MovimientosExcepcion1y2";
+
+        try
+        {
+            apiME12 = await Http.GetFromJsonAsync<List<MovimientoE3>>(URIapiME12);
+
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+        }
+    }
+
+    private async Task GetME3()
+    {
+        var URIapiME3 = "api/Varios/MovimientosExcepcion3";
+
+        try
+        {
+            apiME3 = await Http.GetFromJsonAsync<List<MovimientoE3>>(URIapiME3);
+
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del emisor: {e.Message}");
+        }
+    }
+
+    private async Task SelectE1()
+    {
+        if (movimientoPlanilla != null)
+        {
+            foreach (var ME in apiME12)
+            {
+                if (movimientoPlanilla.MovimientoExcepcion1 != null && movimientoPlanilla.MovimientoExcepcion1.Equals("Si Movimiento Planilla"))
+                {
+                    selectedME1 = "M";
+                }
+                else if (movimientoPlanilla.MovimientoExcepcion1 != null && movimientoPlanilla.MovimientoExcepcion1.Equals("Horas Mov Planilla"))
+                {
+                    selectedME1 = "H";
+                }
+                else if (movimientoPlanilla.MovimientoExcepcion1 != null && movimientoPlanilla.MovimientoExcepcion1.Equals("Cuenta Corriente "))
+                {
+                    selectedME1 = "C";
+                }
+            }
+        }
+        else
+        {
+            selectedME1 = null;
+        }
+    }
+
+    private async Task SelectE2()
+    {
+        if (movimientoPlanilla != null)
+        {
+            foreach (var ME in apiME12)
+            {
+                if (movimientoPlanilla.MovimientoExcepcion2 != null && movimientoPlanilla.MovimientoExcepcion2.Equals("Si Movimiento Planilla"))
+                {
+                    selectedME2 = "M";
+                }
+                else if (movimientoPlanilla.MovimientoExcepcion2 != null && movimientoPlanilla.MovimientoExcepcion2.Equals("Horas Mov Planilla"))
+                {
+                    selectedME2 = "H";
+                }
+                else if (movimientoPlanilla.MovimientoExcepcion2 != null && movimientoPlanilla.MovimientoExcepcion2.Equals("Cuenta Corriente "))
+                {
+                    selectedME2 = "C";
+                }
+            }
+        }
+        else
+        {
+            selectedME2 = null;
+        }
+    }
+
+    private async Task SelectE3()
+    {
+        if (movimientoPlanilla != null)
+        {
+            foreach (var ME in apiME3)
+            {
+                if (movimientoPlanilla.MovimientoExcepcion3 != null && movimientoPlanilla.MovimientoExcepcion3.Equals(ME.CodigoMovimientoExce))
+                {
+                    selectedME3 = ME.DesripMovimientoExce;
+                }
+            }
+        }
+        else
+        {
+            selectedME3 = null;
+        }
+    }
+
+    private async Task SelectAIESS()
+    {
+        if (movimientoPlanilla != null)
+        {
+            if (movimientoPlanilla.Aplica_iess != null && movimientoPlanilla.Aplica_iess.Equals("Si Aplica"))
+            {
+                selectedAIESS = 1;
+            }
+            else if (movimientoPlanilla.Aplica_iess != null && movimientoPlanilla.Aplica_iess.Equals("No Aplica"))
+            {
+                selectedAIESS = 0;
+            }
+        }
+        else
+        {
+            selectedAIESS = 2;
+        }
+    }
+
+    private async Task SelectAIR()
+    {
+        if (movimientoPlanilla != null)
+        {
+            if (movimientoPlanilla.Aplica_imp_renta != null && movimientoPlanilla.Aplica_imp_renta.Equals("Si Aplica"))
+            {
+                selectedAIR = 1;
+            }
+            else if (movimientoPlanilla.Aplica_imp_renta != null && movimientoPlanilla.Aplica_imp_renta.Equals("No Aplica"))
+            {
+                selectedAIR = 0;
+            }
+        }
+        else
+        {
+            selectedAIR = 2;
+        }
+    }
+
+    private async Task SelectAfIESS()
+    {
+        if (movimientoPlanilla != null)
+        {
+            if (movimientoPlanilla.Empresa_Afecta_Iess != null && movimientoPlanilla.Empresa_Afecta_Iess.Equals("Si Aplica"))
+            {
+                selectedAfIESS = 1;
+            }
+            else if (movimientoPlanilla.Empresa_Afecta_Iess != null && movimientoPlanilla.Empresa_Afecta_Iess.Equals("No Aplica"))
+            {
+                selectedAfIESS = 0;
+            }
+        }
+        else
+        {
+            selectedAfIESS = 2;
+        }
+    }
+
+    private async Task CreateMovPlanillaD()
+    {
+        var apiURI = $"api/Varios/MovimientoPlanillaInsert?conceptos={movimientoPlanilla?.Concepto}&prioridad={movimientoPlanilla?.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla?.Cuenta1}&cuenta2={movimientoPlanilla?.Cuenta2}&cuenta3={movimientoPlanilla?.Cuenta3}&cuenta4={movimientoPlanilla?.Cuenta4}&MovimientoExcepcion1={selectedME1}&MovimientoExcepcion2={selectedME2}&MovimientoExcepcion3={apiME3.First(me => me.DesripMovimientoExce == selectedME3).DesripMovimientoExce}&Traba_Aplica_iess={selectedAIESS}&Traba_Proyecto_imp_renta={selectedAIR}&Aplica_Proy_Renta={selectedAIR}&Empresa_Afecta_Iess={selectedAfIESS}";
+
+        try
+        {
+            var apiResponse = await Http.PostAsJsonAsync(apiURI, movimientoPlanilla);
+            response = await apiResponse.Content.ReadFromJsonAsync<ResponseMovimientoPlanilla[]>();
+            if (response != null)
+            {
+                NavigationManager.NavigateTo("/movimiento-planilla");
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al crear Movimiento de Planilla: {e.Message}");
+        }
+    }
+
+    private async Task UpdateMovPlanilla()
+    {
+        var apiURI = $"api/Varios/MovimientoPlanillaUpdate?codigoplanilla={movimientoPlanilla?.CodigoConcepto}&conceptos={movimientoPlanilla?.Concepto}&prioridad={movimientoPlanilla?.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla?.Cuenta1}&cuenta2={movimientoPlanilla?.Cuenta2}&cuenta3={movimientoPlanilla?.Cuenta3}&cuenta4={movimientoPlanilla?.Cuenta4}&MovimientoExcepcion1={selectedME1}&MovimientoExcepcion2={selectedME2}&MovimientoExcepcion3={apiME3.First(me => me.DesripMovimientoExce == selectedME3).DesripMovimientoExce}&Traba_Aplica_iess={selectedAIESS}&Traba_Proyecto_imp_renta={selectedAIR}&Aplica_Proy_Renta={selectedAIR}&Empresa_Afecta_Iess={selectedAfIESS}";
+
+        try
+        {
+            response = await Http.GetFromJsonAsync<ResponseMovimientoPlanilla[]>(apiURI);
+            if (response != null)
+            {
+                NavigationManager.NavigateTo("/movimiento-planilla");
+            }
+
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error actualizar Movimiento de Planilla: {e.Message}");
+        }
+    }
+}
