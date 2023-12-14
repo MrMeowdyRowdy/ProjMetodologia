@@ -20,6 +20,32 @@
         </div>
         <button type="submit" class="btn submit-btn">Crear</button>
         <button @onclick="Goback" class="btn submit-btn">Cancelar</button>
+        <div class="popup" style="@(showPopup ? "display: block;" : "display: none;")">
+            <div class="card success-card">
+                <div class="container">
+                    <img src="Images/icon-success.svg" alt="Error" />
+                    <h2>Datos insertados exitosamente</h2>
+                </div>
+                <p>
+                    Los datos han sido guardados exitosamente
+                    <br> <br><strong>NOTA:</strong> Click en continuar para volver a la lista general
+                </p>
+                <button @onclick="ClosePopup" class="btn dismiss-btn">Continuar</button>
+            </div>
+        </div>
+        <div class="popup" style="@(showPopup1 ? "display: block;" : "display: none;")">
+            <div class="card success-card">
+                <div class="container">
+                    <img src="Images/icon-success.svg" alt="Error" />
+                    <h2>Error al insertar los datos</h2>
+                </div>
+                <p>
+                    No se pudo insertar los datos, por favor verifique sus entradas e intente de nuevo
+                    <br> <br><strong>NOTA:</strong> El registro que desea ingresar ya existe
+                </p>
+                <button @onclick="ClosePopup1" class="btn dismiss-btn">Cerrar</button>
+            </div>
+        </div>
     </form>
 </div>
 
@@ -28,6 +54,8 @@
     private CentroCostos centroCostos = new CentroCostos();
     private CentroCostos[] apiResponse;
     @inject ICreatePage CreatePage
+    private bool showPopup = false;
+    private bool showPopup1 = false;
 
     public async Task CreateCentroCostosData()
     {
@@ -43,11 +71,11 @@
 
                 if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("Ingreso Exitoso"))
                 {
-                    NavigationManager.NavigateTo("/CentroCostos");
+                    showPopup= true;
                 }
                 else if (apiResponse != null && apiResponse.Length > 0 && apiResponse[0].Mensaje.ToString().Equals("El registro que desea ingresar ya existe"))
                 {
-                    
+                    showPopup1 = true;
                 }
             }
             else
@@ -69,5 +97,17 @@
     private void Create()
     {
         //CreateCentroCostosData();
+    }
+
+    private void ClosePopup()
+    {
+        showPopup = false;
+        NavigationManager.NavigateTo("/CentroCostos");
+    }
+
+    private void ClosePopup1()
+    {
+        showPopup1 = false;
+        NavigationManager.NavigateTo("/CreateCentroCostos",true);
     }
 }
