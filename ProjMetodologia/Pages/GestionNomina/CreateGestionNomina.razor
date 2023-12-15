@@ -8,17 +8,18 @@
 @page "/CreateGestionNomina"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject SharedStateService SharedState
 
 <h3>Create Gestion de Nomina</h3>
 
 <form @onsubmit="CreateGestionNominaData">
     <div class="row">
-        <div class="col-md-3">
+        @* <div class="col-md-3">
             <div class="create-form">
                 <label for="Sucursal">Sucursal</label>
                 <input type="number" class="form-control" id="Sucursal" @bind="@gestionNomina.Sucursal">
             </div>
-        </div>
+        </div> *@
         <div class="col-md-9">
             <div class="create-form">
                 <label>Emisor</label>
@@ -60,17 +61,43 @@
             <div class="create-form">
                 <label>Cuenta Contable</label>
                 <input type="text" class="form-control" placeholder="Filtro Cuenta Contable" @bind="filterCodigoCuentaContable">
-                <select class="form-control">
+                <select class="form-control" @onchange="SelectionChanged">
                     <option value="">Seleccione una cuenta contable</option>
                     @foreach (var cuenta in FilteredCuentas)
                     {
-                        <option value="@cuenta.Cuenta" value1="@cuenta.CodigoTipoCuenta">@cuenta.Cuenta.ToString() - @cuenta.DescripcionCuenta</option>
+                        <option value="@cuenta.Cuenta;@cuenta.CodigoTipoCuenta">@cuenta.Cuenta.ToString() - @cuenta.DescripcionCuenta</option>
                     }
                 </select>
             </div>
         </div>
             <button type="submit" class="btn submit-btn" style="margin-right: 10px;">Create</button>
             <button type="button" class="btn submit-btn" style="margin-right: 10px;" @onclick="GoBack">Cancelar</button>
+        <div class="popup" style="@(showPopup ? "display: block;" : "display: none;")">
+            <div class="card success-card">
+                <div class="container">
+                    <img src="Images/icon-success.svg" alt="Error" />
+                    <h2>Datos insertados exitosamente</h2>
+                </div>
+                <p>
+                    Los datos han sido guardados exitosamente
+                    <br> <br><strong>NOTA:</strong> Click en continuar para volver a la lista general
+                </p>
+                <button @onclick="ClosePopup" class="btn dismiss-btn">Continuar</button>
+            </div>
+        </div>
+        <div class="popup" style="@(showPopup1 ? "display: block;" : "display: none;")">
+            <div class="card success-card">
+                <div class="container">
+                    <img src="Images/icon-success.svg" alt="Error" />
+                    <h2>Error al insertar los datos</h2>
+                </div>
+                <p>
+                    No se pudo insertar los datos, por favor verifique sus entradas e intente de nuevo
+                    @* <br> <br><strong>NOTA:</strong> El registro que desea ingresar ya existe *@
+                </p>
+                <button @onclick="ClosePopup1" class="btn dismiss-btn">Cerrar</button>
+            </div>
+        </div>
     </div>
 
 </form>
@@ -93,16 +120,47 @@
     private double codCuenta;
     private string codTipocuenta;
     private string filterCodigoCuentaContable = "";
+    private bool showPopup = false;
+    private bool showPopup1 = false;
 
     private void GoBack()
     {
         NavigationManager.NavigateTo("/GestionNomina");
     }
 
-    private void CreateGestionNominaData()
+    public async Task CreateGestionNominaData()
     {
-        // Implement the logic to create a new GestionNomina instance
-        // You can add it to your data source or take any other actions
+        var apiURI = $"api/Varios/GestionContableNominaInsert?Sucursal={SharedState.CodEmisor}&CodigoConceptoNomina={codConceptoNomina}&CodigoCategoOcupacional={codCategoOcupacional}&CodigoOperacion={codOperacion}&CodigoCuenta={codCuenta}&CodigoTipocuenta={codTipocuenta}";
+
+        try
+        {
+            var apiResponse = await Http.PostAsJsonAsync(apiURI, gestionNomina);
+            var response = await apiResponse.Content.ReadAsStringAsync();
+            if (response != null)
+            {
+                showPopup = true;
+            }
+            else
+            {
+                showPopup1 = true;
+            }
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al crear nomina: {e.Message}");
+        }
+    }
+
+    private void ClosePopup()
+    {
+        showPopup = false;
+        NavigationManager.NavigateTo("/GestionNomina");
+    }
+
+    private void ClosePopup1()
+    {
+        showPopup1 = false;
+        NavigationManager.NavigateTo("/CreateGestionNomina", true);
     }
 
     protected override async Task OnInitializedAsync()
@@ -217,6 +275,12 @@
                 .Where(c => c.Cuenta.ToString().StartsWith(filterCodigoCuentaContable))
                 .ToList();
         }
+    }
+
+    void SelectionChanged(ChangeEventArgs e)
+    {
+        codCuenta = Double.Parse(e.Value.ToString().Split(";")[0]);
+        codTipocuenta = e.Value.ToString().Split(";")[1];
     }
 
 

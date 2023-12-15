@@ -57,7 +57,7 @@ else
             <option value="">Seleccione la Excepción...</option>
             @foreach (var me1 in apiME12)
             {
-                <option value="@me1.DesripMovimientoExce">@me1.CodigoMovimientoExce</option>
+                <option value="@me1.CodigoMovimientoExce">@me1.DesripMovimientoExce</option>
             }
         </select>
     </div>
@@ -67,7 +67,7 @@ else
             <option value="">Seleccione la Excepción...</option>
             @foreach (var me2 in apiME12)
             {
-                <option value="@me2.DesripMovimientoExce">@me2.CodigoMovimientoExce</option>
+                <option value="@me2.CodigoMovimientoExce">@me2.DesripMovimientoExce</option>
             }
         </select>
     </div>
@@ -77,7 +77,7 @@ else
             <option value="">Seleccione la Excepción...</option>
             @foreach (var me3 in apiME3)
             {
-                <option value="@me3.DesripMovimientoExce">@me3.CodigoMovimientoExce</option>
+                <option value="@me3.CodigoMovimientoExce">@me3.DesripMovimientoExce</option>
             }
         </select>
     </div>
@@ -113,6 +113,32 @@ else
     {
         <button type="button" class="btn btn-primary" @onclick=CreateMovPlanillaD>Crear</button>
     }
+    <div class="popup" style="@(showPopup ? "display: block;" : "display: none;")">
+        <div class="card success-card">
+            <div class="container">
+                <img src="Images/icon-success.svg" alt="Error" />
+                <h2>Datos insertados exitosamente</h2>
+            </div>
+            <p>
+                Los datos han sido guardados exitosamente
+                <br> <br><strong>NOTA:</strong> Click en continuar para volver a la lista general
+            </p>
+            <button @onclick="ClosePopup" class="btn dismiss-btn">Continuar</button>
+        </div>
+    </div>
+    <div class="popup" style="@(showPopup1 ? "display: block;" : "display: none;")">
+        <div class="card success-card">
+            <div class="container">
+                <img src="Images/icon-success.svg" alt="Error" />
+                <h2>Error al insertar los datos</h2>
+            </div>
+            <p>
+                No se pudo insertar los datos, por favor verifique sus entradas e intente de nuevo
+                @* <br> <br><strong>NOTA:</strong> El registro que desea ingresar ya existe *@
+            </p>
+            <button @onclick="ClosePopup1" class="btn dismiss-btn">Cerrar</button>
+        </div>
+    </div>
 </form>
 
 
@@ -123,6 +149,8 @@ else
     private List<MovimientoE3> apiME12 = new List<MovimientoE3>(), apiME3 = new List<MovimientoE3>();
     private List<TipoOperacion> apiTO = new List<TipoOperacion>();
     private ResponseMovimientoPlanilla[]? response;
+    private bool showPopup = false;
+    private bool showPopup1 = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -269,9 +297,9 @@ else
         {
             foreach (var ME in apiME3)
             {
-                if (movimientoPlanilla.MovimientoExcepcion3 != null && movimientoPlanilla.MovimientoExcepcion3.Equals(ME.CodigoMovimientoExce))
+                if (movimientoPlanilla.MovimientoExcepcion3 != null && movimientoPlanilla.MovimientoExcepcion3.Equals(ME.DesripMovimientoExce))
                 {
-                    selectedME3 = ME.DesripMovimientoExce;
+                    selectedME3 = ME.CodigoMovimientoExce;
                 }
             }
         }
@@ -348,7 +376,12 @@ else
             response = await apiResponse.Content.ReadFromJsonAsync<ResponseMovimientoPlanilla[]>();
             if (response != null)
             {
-                NavigationManager.NavigateTo("/movimiento-planilla");
+                showPopup = true;
+                //NavigationManager.NavigateTo("/movimiento-planilla");
+            }
+            else
+            {
+                showPopup1 = true;
             }
         }
         catch (HttpRequestException e)
@@ -359,14 +392,19 @@ else
 
     private async Task UpdateMovPlanilla()
     {
-        var apiURI = $"api/Varios/MovimientoPlanillaUpdate?codigoplanilla={movimientoPlanilla?.CodigoConcepto}&conceptos={movimientoPlanilla?.Concepto}&prioridad={movimientoPlanilla?.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla?.Cuenta1}&cuenta2={movimientoPlanilla?.Cuenta2}&cuenta3={movimientoPlanilla?.Cuenta3}&cuenta4={movimientoPlanilla?.Cuenta4}&MovimientoExcepcion1={selectedME1}&MovimientoExcepcion2={selectedME2}&MovimientoExcepcion3={apiME3.First(me => me.DesripMovimientoExce == selectedME3).DesripMovimientoExce}&Traba_Aplica_iess={selectedAIESS}&Traba_Proyecto_imp_renta={selectedAIR}&Aplica_Proy_Renta={selectedAIR}&Empresa_Afecta_Iess={selectedAfIESS}";
+        var apiURI = $"api/Varios/MovimientoPlanillaUpdate?codigoplanilla={movimientoPlanilla?.CodigoConcepto}&conceptos={movimientoPlanilla?.Concepto}&prioridad={movimientoPlanilla?.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla?.Cuenta1}&cuenta2={movimientoPlanilla?.Cuenta2}&cuenta3={movimientoPlanilla?.Cuenta3}&cuenta4={movimientoPlanilla?.Cuenta4}&MovimientoExcepcion1={selectedME1}&MovimientoExcepcion2={selectedME2}&MovimientoExcepcion3={apiME3.First(me => me.CodigoMovimientoExce == selectedME3).DesripMovimientoExce}&Traba_Aplica_iess={selectedAIESS}&Traba_Proyecto_imp_renta={selectedAIR}&Aplica_Proy_Renta={selectedAIR}&Empresa_Afecta_Iess={selectedAfIESS}";
 
         try
         {
             response = await Http.GetFromJsonAsync<ResponseMovimientoPlanilla[]>(apiURI);
             if (response != null)
             {
-                NavigationManager.NavigateTo("/movimiento-planilla");
+                showPopup = true;
+                //NavigationManager.NavigateTo("/movimiento-planilla");
+            }
+            else
+            {
+                showPopup1 = true;
             }
 
         }
@@ -374,5 +412,17 @@ else
         {
             Console.WriteLine($"Error actualizar Movimiento de Planilla: {e.Message}");
         }
+    }
+
+    private void ClosePopup()
+    {
+        showPopup = false;
+        NavigationManager.NavigateTo("/movimiento-planilla", true);
+    }
+
+    private void ClosePopup1()
+    {
+        showPopup1 = false;
+        NavigationManager.NavigateTo("/movimiento-planilla", true);
     }
 }
