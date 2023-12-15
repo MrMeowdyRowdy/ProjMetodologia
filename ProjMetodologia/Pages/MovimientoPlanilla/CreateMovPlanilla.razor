@@ -57,7 +57,7 @@ else
             <option value="">Seleccione la Excepción...</option>
             @foreach (var me1 in apiME12)
             {
-                <option value="@me1.DesripMovimientoExce">@me1.CodigoMovimientoExce</option>
+                <option value="@me1.CodigoMovimientoExce">@me1.DesripMovimientoExce</option>
             }
         </select>
     </div>
@@ -67,7 +67,7 @@ else
             <option value="">Seleccione la Excepción...</option>
             @foreach (var me2 in apiME12)
             {
-                <option value="@me2.DesripMovimientoExce">@me2.CodigoMovimientoExce</option>
+                <option value="@me2.CodigoMovimientoExce">@me2.DesripMovimientoExce</option>
             }
         </select>
     </div>
@@ -77,7 +77,7 @@ else
             <option value="">Seleccione la Excepción...</option>
             @foreach (var me3 in apiME3)
             {
-                <option value="@me3.DesripMovimientoExce">@me3.CodigoMovimientoExce</option>
+                <option value="@me3.CodigoMovimientoExce">@me3.DesripMovimientoExce</option>
             }
         </select>
     </div>
@@ -297,9 +297,9 @@ else
         {
             foreach (var ME in apiME3)
             {
-                if (movimientoPlanilla.MovimientoExcepcion3 != null && movimientoPlanilla.MovimientoExcepcion3.Equals(ME.CodigoMovimientoExce))
+                if (movimientoPlanilla.MovimientoExcepcion3 != null && movimientoPlanilla.MovimientoExcepcion3.Equals(ME.DesripMovimientoExce))
                 {
-                    selectedME3 = ME.DesripMovimientoExce;
+                    selectedME3 = ME.CodigoMovimientoExce;
                 }
             }
         }
@@ -392,7 +392,7 @@ else
 
     private async Task UpdateMovPlanilla()
     {
-        var apiURI = $"api/Varios/MovimientoPlanillaUpdate?codigoplanilla={movimientoPlanilla?.CodigoConcepto}&conceptos={movimientoPlanilla?.Concepto}&prioridad={movimientoPlanilla?.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla?.Cuenta1}&cuenta2={movimientoPlanilla?.Cuenta2}&cuenta3={movimientoPlanilla?.Cuenta3}&cuenta4={movimientoPlanilla?.Cuenta4}&MovimientoExcepcion1={selectedME1}&MovimientoExcepcion2={selectedME2}&MovimientoExcepcion3={apiME3.First(me => me.DesripMovimientoExce == selectedME3).DesripMovimientoExce}&Traba_Aplica_iess={selectedAIESS}&Traba_Proyecto_imp_renta={selectedAIR}&Aplica_Proy_Renta={selectedAIR}&Empresa_Afecta_Iess={selectedAfIESS}";
+        var apiURI = $"api/Varios/MovimientoPlanillaUpdate?codigoplanilla={movimientoPlanilla?.CodigoConcepto}&conceptos={movimientoPlanilla?.Concepto}&prioridad={movimientoPlanilla?.Prioridad}&tipooperacion={apiTO.First(to => to.CodigoTipooperacion == selectedTO).NombreOperacion.Replace(" ", "%20")}&cuenta1={movimientoPlanilla?.Cuenta1}&cuenta2={movimientoPlanilla?.Cuenta2}&cuenta3={movimientoPlanilla?.Cuenta3}&cuenta4={movimientoPlanilla?.Cuenta4}&MovimientoExcepcion1={selectedME1}&MovimientoExcepcion2={selectedME2}&MovimientoExcepcion3={apiME3.First(me => me.CodigoMovimientoExce == selectedME3).DesripMovimientoExce}&Traba_Aplica_iess={selectedAIESS}&Traba_Proyecto_imp_renta={selectedAIR}&Aplica_Proy_Renta={selectedAIR}&Empresa_Afecta_Iess={selectedAfIESS}";
 
         try
         {
