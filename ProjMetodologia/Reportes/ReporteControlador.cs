@@ -15,5 +15,16 @@ namespace ProjMetodologia.Reportes
 
             await js.InvokeVoidAsync("BlazorDownloadFile", filename, XLSStream);
         }
+
+        public async Task GenerarReporteCalculos(IJSRuntime js,
+                                                 List<CalculosTrabajador> data,
+                                                 string filename = "export_calculos.xlsx",
+                                                 int sucursal = 0)
+        {
+            var reporte = new CalculoTrabajadorReporte();
+            var XLSStream = reporte.Edition(data, sucursal);
+
+            await js.InvokeVoidAsync("BlazorDownloadFile", filename, XLSStream);
+        }
     }
 }

@@ -12,17 +12,6 @@ namespace ProjMetodologia.Reportes
         {
             var wb = new XLWorkbook();
 
-            wb.Properties.Author = "the Author";
-            wb.Properties.Title = "the Title";
-            wb.Properties.Subject = "the Subject";
-            wb.Properties.Category = "the Category";
-            wb.Properties.Keywords = "the Keywords";
-            wb.Properties.Comments = "the Comments";
-            wb.Properties.Status = "the Status";
-            wb.Properties.LastModifiedBy = "the Last Modified By";
-            wb.Properties.Company = "the Company";
-            wb.Properties.Manager = "the Manager";
-
             var ws = wb.Worksheets.Add("Reporte de trabajadores");
 
             ws.Cell(2, 2).Value = $"Reporte de trabajadores sucursal: {sucursal}";
@@ -47,16 +36,6 @@ namespace ProjMetodologia.Reportes
 
                 currentRow++;
             }
-
-            /*
-            ws.Column(1).Width = 20;
-            ws.Column(2).Width = 20;
-            ws.Column(3).Width = 20;
-            ws.Column(4).Width = 20;
-            ws.Column(5).Width = 20;
-            ws.Column(6).Width = 20;
-            */
-
 
             var rngTable = ws.Range($"B2:G{currentRow-1}");
 
