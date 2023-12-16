@@ -1,0 +1,177 @@
+﻿@using System.Net.Http.Json
+@using Data
+@using System.Text
+@using System.Text.Json
+@using Data.Trabajador;
+@using Reportes;
+
+@page "/CalculosTrabajador"
+@inject HttpClient Http
+@inject SharedStateService SharedState
+@inject IJSRuntime JSRuntime
+
+<h3>Salarios de Trabajadores</h3>
+<h3>Sede: @SharedState.CodEmisor</h3>
+<button type="button" class="btn btn-success mb-2" @onclick="@GenerarReporteCalculos">Generar reporte</button>
+
+@if (trabajadorApiE != null)
+{
+    if (isMobile)
+    {
+        @foreach (var item in calculos)
+        {
+            <div class="mobile-table-row">
+                <div class="mobile-table-cell"><strong>Nro:</strong> @item.Id_Trabajador</div>
+                <div class="mobile-table-cell"><strong>Trabajador:</strong>@($"{item.Nombres} {item.Apellido_Paterno} {item.Apellido_Materno}")</div>
+                <div class="mobile-table-cell"><strong>Cedula:</strong> @item.Identificacion</div>
+                <div class="mobile-table-cell"><strong>Sueldo:</strong> @item.Remuneracion_Minima</div>
+                <div class="mobile-table-cell"><strong>IESS Patrono:</strong> @item.IESS_Patrono</div>
+                <div class="mobile-table-cell"><strong>IESS Personal:</strong> @item.IESS_Personal</div>
+                <div class="mobile-table-cell"><strong>Suma:</strong> @item.Suma</div>
+            </div>
+        }
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Todos:<input type="checkbox" @onchange="ToggleSelectAll" checked="@selectAllChecked" /></th>
+                    <th>Nro</th>
+                    <th>Trabajador</th>
+                    <th>Cedula</th>
+                    <th>Sueldo</th>
+                    <th>IESS Patrono</th>
+                    <th>IESS Personal</th>
+                    <th>Suma</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in calculos)
+                {
+                    <tr>
+                        <td><input type="checkbox" @onchange="@(e => CheckboxChanged((bool)e.Value, item))" /></td>
+                        <td>@item.Id_Trabajador</td>
+                        <td>@($"{item.Nombres} {item.Apellido_Paterno} {item.Apellido_Materno}")</td>
+                        <td>@item.Identificacion</td>
+                        <td>@item.Remuneracion_Minima</td>
+                        <td>@item.IESS_Patrono</td>
+                        <td>@item.IESS_Personal</td>
+                        <td>@item.Suma</td>
+                    </tr>
+                }
+                
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p>Loading...</p>
+}
+
+<button type="button" class="btn btn-success mb-2" @onclick="@GenerarReporteCalculos">Generar reporte</button>
+
+
+@code {
+
+    private List<Trabajador> trabajadorApiE = new List<Trabajador>();
+    private List<CalculosTrabajador> calculos = new List<CalculosTrabajador>();
+    private bool isMobile;
+    private bool isLoaded = false;
+    private HashSet<int> selectedTrabajadores = new();
+    private bool selectAllChecked;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !isLoaded)
+        {
+            isMobile = await JSRuntime.InvokeAsync<bool>("isMobileDevice");
+            isLoaded = true; // Asegurarse de que no se vuelva a cargar
+            StateHasChanged(); // Esto notificará a Blazor que debe volver a renderizar el componente
+        }
+    }
+
+    private void CheckboxChanged(bool isChecked, CalculosTrabajador trabajador)
+    {
+        if (isChecked)
+        {
+            selectedTrabajadores.Add(trabajador.Id_Trabajador);
+        }
+        else
+        {
+            selectedTrabajadores.Remove(trabajador.Id_Trabajador);
+        }
+    }
+
+    private async Task GetTrabajadorData()
+    {
+        var apiName = $"api/Varios/TrabajadorSelect?sucursal={SharedState.CodEmisor}";
+
+        try
+        {
+            trabajadorApiE = await Http.GetFromJsonAsync<List<Trabajador>>(apiName);
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine($"Error al obtener datos del usuario: {e.Message}");
+        }
+    }
+
+    private async Task calculosSalario()
+    {
+        calculos = trabajadorApiE.Select(trabajador => new CalculosTrabajador
+            {
+                Id_Trabajador = trabajador.Id_Trabajador,
+                Nombres = trabajador.Nombres,
+                Identificacion = trabajador.Identificacion,
+                Remuneracion_Minima = trabajador.Remuneracion_Minima,
+                IESS_Patrono = Math.Round(trabajador.Remuneracion_Minima * 0.1115m,2),
+                IESS_Personal = Math.Round(trabajador.Remuneracion_Minima * 0.0945m,2)
+            }).ToList();
+
+        foreach (var calc in calculos)
+        {
+            calc.Suma = Math.Round(calc.Remuneracion_Minima + calc.IESS_Patrono + calc.IESS_Personal,2);
+        }
+    }
+
+    // private async void GenerarReporte()
+    // {
+    //     var selectedData = trabajadorApiE.Where(t => selectedTrabajadores.Contains(t.Id_Trabajador)).ToList();
+    //     var xls = new ReporteControlador();
+    //     await xls.GenerarReporteTrabajador(JSRuntime, selectedData, $"ReporteTrabajadoresSucursal{SharedState.CodEmisor}.xlsx", SharedState.CodEmisor);
+    // }
+
+    private async void GenerarReporteCalculos()
+    {
+        var selectedData = calculos.Where(c => selectedTrabajadores.Contains(c.Id_Trabajador)).ToList();
+        var xls = new ReporteControlador();
+        await xls.GenerarReporteCalculos(JSRuntime, selectedData, $"ReporteSalariosSucursal{SharedState.CodEmisor}.xlsx", SharedState.CodEmisor);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTrabajadorData();
+        await calculosSalario();
+    }
+
+    private void ToggleSelectAll(ChangeEventArgs e)
+    {
+        if (e.Value is bool isAllSelected)
+        {
+            selectAllChecked = isAllSelected;
+            selectedTrabajadores.Clear();
+
+            if (isAllSelected)
+            {
+                foreach (var trabajador in trabajadorApiE)
+                {
+                    selectedTrabajadores.Add(trabajador.Id_Trabajador);
+                }
+            }
+        }
+    }
+
+}
